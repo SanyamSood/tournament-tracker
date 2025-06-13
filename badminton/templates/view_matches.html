@@ -121,12 +121,12 @@
                     </td>
 
                     <td class="col-time">
-                        {{ match.local_time|time:"H:i" }}
-                        {% if user.is_authenticated and match.updated_at != match.created_at %}
-                            <br>
-                            <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
-                        {% endif %}
-                    </td>
+    {{ match.local_time|time:"H:i" }}
+    {% if user.is_authenticated and match.updated_at != match.created_at %}
+        <br>
+        <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
+    {% endif %}
+</td>
 
                     {% if perms.badminton.change_match %}
                     <td class="col-edit">
