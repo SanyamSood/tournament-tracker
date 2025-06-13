@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Edit Groups & Teams{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  {% if perms.badminton.change_team %}
+    <h2>Edit Groups & Teams — {{ tournament.name }}</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      <hr>
+      <a href="{% url 'add_team' tournament.id %}" class="btn btn-outline-primary">
+        ➕ Add New Team
+      </a>
+
+      {% for group, formset in group_forms %}
+        <h4 class="mt-4">{{ group.name }}</h4>
+        {{ formset.management_form }}
+
+        {% if formset.non_form_errors %}
+          <div class="alert alert-danger">
+            {% for error in formset.non_form_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <table class="table table-bordered align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Team Name</th>
+              <th class="text-center">Delete?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for form in formset %}
+              <tr>
+                {% for hidden_field in form.hidden_fields %}
+                  {{ hidden_field }}
+                {% endfor %}
+                <td>
+                  {{ form.name }}
+                  {% if form.name.errors %}
+                    <div class="text-danger small">
+                      {{ form.name.errors.0 }}
+                    </div>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {{ form.DELETE }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endfor %}
+
+      <hr class="my-4">
+      <div class="mt-4">
+        <button type="submit" class="btn btn-success">💾 Save All Changes</button>
+        <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-secondary ms-2">↩️ Cancel</a>
+      </div>
+    </form>
+
+  {% else %}
+    <div class="alert alert-danger text-center">
+      <strong>Access Denied:</strong> You do not have permission to edit teams.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

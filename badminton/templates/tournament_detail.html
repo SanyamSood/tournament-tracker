@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ tournament.name }} — Badminton Tournament{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <h2 class="mb-0">{{ tournament.name }}</h2>
+            <p class="text-muted">{{ tournament.place }} — {{ tournament.date }}</p>
+        </div>
+
+        {% if user.is_authenticated and perms.badminton.change_team %}
+        <div>
+            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-warning btn-sm">
+                ✏️ Edit Teams
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    <style>
+        table.table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        table.table th,
+        table.table td {
+            white-space: nowrap;
+            text-align: center;
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 8px;
+        }
+
+        .team-col {
+            width: 200px;
+            min-width: 200px;
+            max-width: 200px;
+            text-align: left;
+        }
+
+        .group-heading {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-left: 5px solid #0d6efd;
+        }
+
+        .group-heading h4 {
+            margin: 0;
+        }
+    </style>
+
+    {% for group in groups %}
+    <div class="group-heading">
+        <h4 class="mb-0">Group {{ group.group|upper }}</h4>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th class="team-col">Team</th>
+                    <th>Played</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>Sets Won</th>
+                    <th>Sets Lost</th>
+                    <th>Set Diff</th>
+                    <th>Pts Scored</th>
+                    <th>Pts Conceded</th>
+                    <th>Pts Diff</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in group.table %}
+                <tr>
+                    <td class="team-col" title="{{ team.name }}">{{ team.name }}</td>
+                    <td>{{ team.played }}</td>
+                    <td>{{ team.won }}</td>
+                    <td>{{ team.lost }}</td>
+                    <td>{{ team.sets_won }}</td>
+                    <td>{{ team.sets_lost }}</td>
+                    <td>{{ team.set_diff }}</td>
+                    <td>{{ team.points_scored }}</td>
+                    <td>{{ team.points_conceded }}</td>
+                    <td>{{ team.point_diff }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

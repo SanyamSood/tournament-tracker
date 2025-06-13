@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load custom_filters %}
+
+{% block title %}Create Tournament{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if perms.badminton.add_tournament %}
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>Create New Tournament</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" id="tournamentForm">
+                    {% csrf_token %}
+
+                    <!-- Tournament Name -->
+                    <div class="mb-3">
+                        {{ form.name.label_tag }}
+                        {{ form.name|add_class:"form-control" }}
+                    </div>
+
+                    <!-- Tournament Place -->
+                    <div class="mb-3">
+                        {{ form.place.label_tag }}
+                        {{ form.place|add_class:"form-control" }}
+                    </div>
+
+                    <!-- Tournament Date -->
+                    <div class="mb-3">
+                        {{ form.date.label_tag }}
+                        {{ form.date|add_class:"form-control" }}
+                    </div>
+
+                    <!-- Number of Groups Dropdown -->
+                    <div class="mb-3">
+                        {{ form.num_groups.label_tag }}
+                        {{ form.num_groups|add_class:"form-select" }}
+                    </div>
+
+                    <!-- Group Team Fields (A to J) -->
+                    {% for letter in "ABCDEFGHIJ" %}
+                        {% with "group_"|add:letter|lower|add:"_teams" as field_name %}
+                            {% with form|get_item:field_name as field %}
+                                <div class="mb-3 group-box" id="group{{ letter }}Box" style="display: none;">
+                                    {{ field.label_tag }}
+                                    {{ field|add_class:"form-control" }}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                </div>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success w-100">Create Tournament</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-danger text-center mt-4">
+            <strong>Access Denied:</strong> You do not have permission to create tournaments.
+        </div>
+    {% endif %}
+</div>
+
+<!-- JavaScript to show/hide group fields based on selected number -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.querySelector('select[name="num_groups"]');
+        const maxGroups = 10;
+
+        function toggleGroupInputs(num) {
+            for (let i = 0; i < maxGroups; i++) {
+                const letter = String.fromCharCode(65 + i);  // A, B, C...
+                const box = document.getElementById(`group${letter}Box`);
+                if (box) {
+                    box.style.display = (i < num) ? 'block' : 'none';
+                }
+            }
+        }
+
+        if (select) {
+            select.addEventListener('change', function () {
+                const selectedValue = parseInt(select.value);
+                toggleGroupInputs(selectedValue);
+            });
+
+            // Trigger on page load to reflect default selection
+            if (select.value) {
+                toggleGroupInputs(parseInt(select.value));
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load tz %}
+
+{% block title %}View Matches — {{ tournament.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Matches — {{ tournament.name }}</h2>
+    <hr>
+
+    {% if perms.badminton.add_match %}
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'add_match' tournament.id %}" class="btn btn-success">
+            + Add Match
+        </a>
+    </div>
+    {% endif %}
+
+    <style>
+        table.table th,
+        table.table td {
+            white-space: nowrap;
+            text-align: center;
+            vertical-align: middle;
+            padding: 6px 10px;
+        }
+
+        th.col-match-no, td.col-match-no {
+            width: 5%;
+        }
+        th.col-group, td.col-group {
+            width: 6%;
+        }
+        th.col-team, td.col-team {
+            width: 18%;
+            text-align: left;
+        }
+        th.col-court, td.col-court {
+            width: 6%;
+        }
+        th.col-set, td.col-set {
+            width: 8%;
+        }
+        th.col-score, td.col-score {
+            width: 10%;
+        }
+        th.col-winner, td.col-winner {
+            width: 14%;
+        }
+        th.col-time, td.col-time {
+            width: 10%;
+        }
+        th.col-edit, td.col-edit {
+            width: 8%;
+        }
+
+        @media (max-width: 768px) {
+            table.table th,
+            table.table td {
+                font-size: 12px;
+                padding: 4px;
+            }
+        }
+    </style>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th class="col-match-no">#</th>
+                    <th class="col-group">Group</th>
+                    <th class="col-team">Team 1</th>
+                    <th class="col-team">Team 2</th>
+                    <th class="col-court">Court</th>
+                    <th class="col-set">Set 1</th>
+                    <th class="col-set">Set 2</th>
+                    <th class="col-set">Set 3</th>
+                    <th class="col-score">Match Score</th>
+                    <th class="col-winner">Winner</th>
+                    <th class="col-time">Time</th>
+                    {% if perms.badminton.change_match %}
+                        <th class="col-edit">Edit</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in matches %}
+                <tr>
+                    <td class="col-match-no">{{ forloop.counter }}</td>
+                    <td class="col-group">{{ match.group.name }}</td>
+                    <td class="col-team text-start" title="{{ match.team1.name }}">{{ match.team1.name }}</td>
+                    <td class="col-team text-start" title="{{ match.team2.name }}">{{ match.team2.name }}</td>
+                    <td class="col-court">{{ match.court_number }}</td>
+
+                    <td class="col-set">{{ match.set1_team1 }} - {{ match.set1_team2 }}</td>
+
+                    <td class="col-set">
+                        {% if match.set2_team1 is not None and match.set2_team2 is not None %}
+                            {{ match.set2_team1 }} - {{ match.set2_team2 }}
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="col-set">
+                        {% if match.set3_team1 is not None and match.set3_team2 is not None %}
+                            {{ match.set3_team1 }} - {{ match.set3_team2 }}
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="col-score">{{ match.match_score }}</td>
+
+                    <td class="col-winner">
+                        {% if match.winner %}
+                            <span class="fw-bold text-success" title="{{ match.winner.name }}">{{ match.winner.name }}</span>
+                        {% else %}
+                            <span class="text-warning">TBD</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="col-time">
+                        {{ match.local_time|time:"H:i" }}
+                        {% if user.is_authenticated and match.updated_at != match.created_at %}
+                            <br>
+                            <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
+                        {% endif %}
+                    </td>
+
+                    {% if perms.badminton.change_match %}
+                    <td class="col-edit">
+                        <a href="{% url 'edit_match' tournament.id match.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if perms.badminton.change_match %}12{% else %}11{% endif %}" class="text-center text-muted">
+                        No matches recorded yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

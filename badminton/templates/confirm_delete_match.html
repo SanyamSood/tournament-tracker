@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Match Confirmation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  {% if perms.badminton.delete_match %}
+    <div class="card shadow">
+      <div class="card-header bg-danger text-white">
+        <h3 class="text-center">Confirm Delete Match</h3>
+      </div>
+      <div class="card-body text-center">
+        <p>Are you sure you want to delete the match between:</p>
+        <h4>{{ match.team1.name }} vs {{ match.team2.name }}</h4>
+        <p class="text-muted">on Court {{ match.court_number }} — {{ match.created_at|date:"d M Y, H:i" }}</p>
+
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger me-2">Yes, Delete Match</button>
+          <a href="{% url 'view_matches' tournament_id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-danger text-center">
+      <strong>Access Denied:</strong> You do not have permission to delete matches.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

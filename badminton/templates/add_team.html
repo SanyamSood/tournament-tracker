@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Add Teams{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  {% if perms.badminton.add_team %}
+    <h2>Add New Teams - {{ tournament.name }}</h2>
+
+    <form method="post" id="teamForm">
+      {% csrf_token %}
+      {{ formset.management_form }}
+
+      <div id="formContainer">
+        {% for form in formset %}
+          <div class="team-form border p-3 mb-3 rounded">
+            <div class="mb-3">
+              <label class="form-label">Team Name</label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="text-danger small">{{ form.name.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Select Group</label>
+              <select name="group_{{ forloop.counter0 }}" class="form-select group-select" required>
+                <option value="">-- Select Group --</option>
+                {% for group in groups %}
+                  <option value="{{ group.id }}">{{ group.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <button type="button" class="btn btn-outline-primary mb-3" onclick="addForm()">➕ Add Another Team</button>
+
+      <div>
+        <button type="submit" class="btn btn-success">💾 Save All Teams</button>
+        <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-secondary ms-2">↩️ Back</a>
+      </div>
+    </form>
+  {% else %}
+    <div class="alert alert-danger text-center mt-5">
+      <strong>Access Denied:</strong> You do not have permission to add teams.
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  let formIndex = Number("{{ formset.total_form_count }}");
+  const groupsHTML = `{% for group in groups %}<option value="{{ group.id }}">{{ group.name }}</option>{% endfor %}`;
+
+  function addForm() {
+    const container = document.getElementById('formContainer');
+    const newForm = document.createElement('div');
+    newForm.className = 'team-form border p-3 mb-3 rounded';
+    newForm.innerHTML = `
+      <div class="mb-3">
+        <label class="form-label">Team Name</label>
+        <input type="text" name="form-${formIndex}-name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Select Group</label>
+        <select name="group_${formIndex}" class="form-select group-select" required>
+          <option value="">-- Select Group --</option>
+          ${groupsHTML}
+        </select>
+      </div>
+    `;
+    container.appendChild(newForm);
+
+    // Update management form total_forms count
+    const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+    totalForms.value = ++formIndex;
+  }
+</script>
+{% endblock %}

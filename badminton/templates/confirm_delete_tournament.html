@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Tournament - {{ tournament.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  {% if perms.badminton.delete_tournament %}
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-lg border-danger">
+          <div class="card-header bg-danger text-white text-center">
+            <h4 class="mb-0">Confirm Tournament Deletion</h4>
+          </div>
+
+          <div class="card-body text-center">
+            <p class="lead mb-3">Are you sure you want to delete the following tournament?</p>
+
+            <div class="mb-4">
+              <h5 class="text-danger mb-1"><strong>{{ tournament.name }}</strong></h5>
+              <p class="mb-1"><strong>Place:</strong> {{ tournament.place }}</p>
+              <p><strong>Date:</strong> {{ tournament.date|date:"F j, Y" }}</p>
+            </div>
+
+            <form method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger me-2">Yes, Delete</button>
+              <a href="{% url 'tournament_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-danger text-center mt-5">
+      <strong>Access Denied:</strong> You do not have permission to delete tournaments.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
