@@ -3,23 +3,31 @@
 {% block title %}{{ tournament.name }} — Badminton Tournament{% endblock %}
 
 {% block content %}
+
 <div class="container mt-4">
-    <div class="row justify-content-between align-items-center mb-3">
-        <div class="col-12 col-md-8">
-            <h2 class="mb-1">{{ tournament.name }}</h2>
-            <p class="text-muted mb-0">{{ tournament.place }} — {{ tournament.date }}</p>
-        </div>
-
-        {% if user.is_authenticated and perms.badminton.change_team %}
-        <div class="col-12 col-md-4 text-md-end text-start mt-2 mt-md-0">
-            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-warning btn-sm">
-                ✏️ Edit Teams
-            </a>
-        </div>
-        {% endif %}
-    </div>
-
+    <h2 class="text-center mb-4">{{ tournament.name }}</h2>
+    <p class=" text-center text-muted mb-2">{{ tournament.place }} — {{ tournament.date }}</p>
     <hr>
+    <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'view_matches' tournament.id %}" class="btn btn-outline-primary btn-sm">
+                👀 View Matches
+            </a>
+
+            {% if user.is_authenticated %}
+                {% if perms.badminton.change_team %}
+                <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-outline-primary btn-sm">
+                    ✏️ Edit Teams
+                </a>
+                {% endif %}
+                {% if perms.badminton.add_match %}
+                <a href="{% url 'add_match' tournament.id %}" class="btn btn-outline-primary btn-sm">
+                    ➕ Add Match
+                </a>
+                {% endif %}
+            {% endif %}
+        </div>
+</div>
+
 
     <style>
         .team-col {
