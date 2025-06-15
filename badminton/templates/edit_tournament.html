@@ -1,49 +1,49 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Edit Tournament{% endblock %}
+{% block title %}Edit Tournament — {{ tournament.name }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
   {% if perms.badminton.change_tournament %}
-    <div class="card shadow-lg">
-      <div class="card-header bg-info text-white text-center">
-        <h2>Edit Tournament: {{ tournament.name }}</h2>
-      </div>
-
-      <div class="card-body">
-        <form method="post">
-          {% csrf_token %}
-
-          <!-- Tournament Name -->
-          <div class="mb-3">
-            {{ form.name.label_tag }}
-            {{ form.name|add_class:"form-control" }}
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-lg">
+          <div class="card-header bg-info text-white text-center">
+            <h2 class="h4 h-md3 mb-0">Edit Tournament: {{ tournament.name }}</h2>
           </div>
 
-          <!-- Tournament Place -->
-          <div class="mb-3">
-            {{ form.place.label_tag }}
-            {{ form.place|add_class:"form-control" }}
-          </div>
+          <div class="card-body">
+            <form method="post" novalidate>
+              {% csrf_token %}
 
-          <!-- Tournament Date -->
-          <div class="mb-3">
-            {{ form.date.label_tag }}
-            {{ form.date|add_class:"form-control" }}
-          </div>
+              <div class="mb-3">
+                {{ form.name.label_tag }}
+                {{ form.name|add_class:"form-control" }}
+              </div>
 
-          <!-- Number of Groups -->
-          <div class="mb-3">
-            {{ form.num_groups.label_tag }}
-            {{ form.num_groups|add_class:"form-select" }}
-          </div>
+              <div class="mb-3">
+                {{ form.place.label_tag }}
+                {{ form.place|add_class:"form-control" }}
+              </div>
 
-          <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success">💾 Save Changes</button>
-            <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-secondary ms-2">↩️ Cancel</a>
+              <div class="mb-3">
+                {{ form.date.label_tag }}
+                {{ form.date|add_class:"form-control" }}
+              </div>
+
+              <div class="mb-3">
+                {{ form.num_groups.label_tag }}
+                {{ form.num_groups|add_class:"form-select" }}
+              </div>
+
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-success">💾 Save Changes</button>
+                <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-secondary">↩️ Cancel</a>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   {% else %}

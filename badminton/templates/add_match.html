@@ -4,8 +4,8 @@
 <div class="container mt-5">
   {% if perms.badminton.add_match %}
     <div class="card shadow-lg">
-      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <h2 class="mb-0">Add Match - {{ tournament.name }}</h2>
+      <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <h2 class="mb-0 text-center text-md-start">Add Match - {{ tournament.name }}</h2>
       </div>
 
       <div class="card-body">
@@ -28,11 +28,11 @@
           <div class="form-group mb-4">
             <label class="fw-bold d-block mb-2">Teams:</label>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
                 <label for="{{ form.team1.id_for_label }}">Team 1</label>
                 {{ form.team1 }}
               </div>
-              <div class="col-md-6">
+              <div class="col-12 col-md-6">
                 <label for="{{ form.team2.id_for_label }}">Team 2</label>
                 {{ form.team2 }}
               </div>
@@ -41,61 +41,44 @@
 
           <!-- Set Scores -->
           <div class="form-group mb-4">
-            <h5 class="text-center mb-3">Set Scores</h5>
+            <h5 class="text-center mb-4">Set Scores</h5>
 
             <!-- Header Row -->
-            <div class="row mb-2">
-              <div class="col-md-6 text-center fw-bold border-bottom pb-1">
-                <span id="team1Name">Team 1</span>
-              </div>
-              <div class="col-md-6 text-center fw-bold border-bottom pb-1">
-                <span id="team2Name">Team 2</span>
-              </div>
+            <div class="row fw-bold text-center mb-2">
+              <div class="col-2"></div>
+              <div class="col-5" id="team1Name">Team 1</div>
+              <div class="col-5" id="team2Name">Team 2</div>
             </div>
 
             <!-- Set 1 -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label><strong>Set 1</strong></label>
-                {{ form.set1_team1 }}
-              </div>
-              <div class="col-md-6">
-                <label><strong>Set 1</strong></label>
-                {{ form.set1_team2 }}
-              </div>
+            <div class="row align-items-center mb-3">
+              <div class="col-2 text-center"><strong>1</strong></div>
+              <div class="col-5">{{ form.set1_team1 }}</div>
+              <div class="col-5">{{ form.set1_team2 }}</div>
             </div>
 
             <!-- Set 2 -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label><strong>Set 2</strong></label>
-                {{ form.set2_team1 }}
-              </div>
-              <div class="col-md-6">
-                <label><strong>Set 2</strong></label>
-                {{ form.set2_team2 }}
-              </div>
+            <div class="row align-items-center mb-3">
+              <div class="col-2 text-center"><strong>2</strong></div>
+              <div class="col-5">{{ form.set2_team1 }}</div>
+              <div class="col-5">{{ form.set2_team2 }}</div>
             </div>
 
             <!-- Set 3 -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label><strong>Set 3</strong></label>
-                {{ form.set3_team1 }}
-              </div>
-              <div class="col-md-6">
-                <label><strong>Set 3</strong></label>
-                {{ form.set3_team2 }}
-              </div>
+            <div class="row align-items-center mb-3">
+              <div class="col-2 text-center"><strong>3</strong></div>
+              <div class="col-5">{{ form.set3_team1 }}</div>
+              <div class="col-5">{{ form.set3_team2 }}</div>
             </div>
           </div>
 
+          <!-- Submit Button -->
           <button type="submit" class="btn btn-primary w-100 fw-bold py-2">✅ Save Match</button>
         </form>
       </div>
 
       <div class="card-footer text-center">
-        <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-secondary">← Back to Tournament</a>
+        <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-secondary mt-2 w-100 w-sm-auto">← Back to Tournament</a>
       </div>
     </div>
 
@@ -156,32 +139,46 @@
     </script>
 
     <style>
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 0.45rem;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
+        outline: none;
+      }
+
       .form-group label {
         font-weight: bold;
         display: block;
         margin-bottom: 0.4rem;
       }
 
-      .form-group select,
-      .form-group input {
-        width: 100%;
-        padding: 0.45rem;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-      }
-
-      .form-group select:focus,
-      .form-group input:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
-        outline: none;
-      }
-
       .card-footer a.btn:hover {
         background-color: #e2e6ea;
         color: #000;
       }
+
+      @media (max-width: 576px) {
+        .card-header h2 {
+          font-size: 1.3rem;
+          text-align: center;
+        }
+
+        .btn,
+        .form-group input,
+        .form-group select {
+          font-size: 0.95rem;
+        }
+      }
     </style>
+
   {% else %}
     <div class="alert alert-danger text-center mt-4">
       <strong>Access Denied:</strong> You do not have permission to add matches.

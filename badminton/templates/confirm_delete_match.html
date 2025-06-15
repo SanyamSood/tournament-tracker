@@ -3,26 +3,33 @@
 {% block title %}Delete Match Confirmation{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-4 mb-5">
   {% if perms.badminton.delete_match %}
-    <div class="card shadow">
-      <div class="card-header bg-danger text-white">
-        <h3 class="text-center">Confirm Delete Match</h3>
+    <div class="card shadow-lg border-danger">
+      <div class="card-header bg-danger text-white text-center">
+        <h3 class="mb-0">Confirm Delete Match</h3>
       </div>
-      <div class="card-body text-center">
-        <p>Are you sure you want to delete the match between:</p>
-        <h4>{{ match.team1.name }} vs {{ match.team2.name }}</h4>
-        <p class="text-muted">on Court {{ match.court_number }} — {{ match.created_at|date:"d M Y, H:i" }}</p>
 
-        <form method="post">
+      <div class="card-body text-center">
+        <p class="lead">Are you sure you want to delete the match between:</p>
+
+        <h4 class="fw-semibold text-primary">
+          {{ match.team1.name }} <span class="text-dark">vs</span> {{ match.team2.name }}
+        </h4>
+
+        <p class="text-muted mt-2">
+          Court {{ match.court_number }} — {{ match.created_at|date:"d M Y, H:i" }}
+        </p>
+
+        <form method="post" class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
           {% csrf_token %}
-          <button type="submit" class="btn btn-danger me-2">Yes, Delete Match</button>
-          <a href="{% url 'view_matches' tournament_id %}" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-danger px-4">🗑️ Yes, Delete</button>
+          <a href="{% url 'view_matches' tournament_id %}" class="btn btn-secondary px-4">↩️ Cancel</a>
         </form>
       </div>
     </div>
   {% else %}
-    <div class="alert alert-danger text-center">
+    <div class="alert alert-danger text-center mt-5">
       <strong>Access Denied:</strong> You do not have permission to delete matches.
     </div>
   {% endif %}

@@ -4,13 +4,13 @@
 {% block title %}View Matches — {{ tournament.name }}{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <h2 class="text-center mb-4">Matches — {{ tournament.name }}</h2>
     <hr>
 
     {% if perms.badminton.add_match %}
     <div class="d-flex justify-content-end mb-3">
-        <a href="{% url 'add_match' tournament.id %}" class="btn btn-success">
+        <a href="{% url 'add_match' tournament.id %}" class="btn btn-success btn-sm">
             + Add Match
         </a>
     </div>
@@ -25,40 +25,23 @@
             padding: 6px 10px;
         }
 
-        th.col-match-no, td.col-match-no {
-            width: 5%;
-        }
-        th.col-group, td.col-group {
-            width: 6%;
-        }
-        th.col-team, td.col-team {
-            width: 18%;
-            text-align: left;
-        }
-        th.col-court, td.col-court {
-            width: 6%;
-        }
-        th.col-set, td.col-set {
-            width: 8%;
-        }
-        th.col-score, td.col-score {
-            width: 10%;
-        }
-        th.col-winner, td.col-winner {
-            width: 14%;
-        }
-        th.col-time, td.col-time {
-            width: 10%;
-        }
-        th.col-edit, td.col-edit {
-            width: 8%;
-        }
+        .col-match-no { width: 5%; }
+        .col-group    { width: 6%; }
+        .col-team     { width: 18%; text-align: left; }
+        .col-court    { width: 6%; }
+        .col-set      { width: 8%; }
+        .col-score    { width: 10%; }
+        .col-winner   { width: 14%; }
+        .col-time     { width: 10%; }
+        .col-edit     { width: 8%; }
 
         @media (max-width: 768px) {
-            table.table th,
-            table.table td {
+            table.table {
                 font-size: 12px;
-                padding: 4px;
+            }
+            .btn-sm {
+                font-size: 12px;
+                padding: 2px 6px;
             }
         }
     </style>
@@ -121,12 +104,12 @@
                     </td>
 
                     <td class="col-time">
-    {{ match.local_time|time:"H:i" }}
-    {% if user.is_authenticated and match.updated_at != match.created_at %}
-        <br>
-        <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
-    {% endif %}
-</td>
+                        {{ match.local_time|time:"H:i" }}
+                        {% if user.is_authenticated and match.updated_at != match.created_at %}
+                            <br>
+                            <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
+                        {% endif %}
+                    </td>
 
                     {% if perms.badminton.change_match %}
                     <td class="col-edit">

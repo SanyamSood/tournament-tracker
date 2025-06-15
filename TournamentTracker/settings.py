@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-6aresfgq9c=oglb0_8vq1y4jgom*&)oup2e&14$80_z6!!2fch
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['tournament-tracker-dgus.onrender.com']
+ALLOWED_HOSTS = ['tournament-tracker-dgus.onrender.com', '127.0.0.1']
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/badminton/'  # or wherever your dashboard is
