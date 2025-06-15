@@ -3,45 +3,47 @@
 {% block title %}All Tournaments{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">All Tournaments</h2>
+<div class="container mt-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <h2 class="mb-3 mb-md-0">All Tournaments</h2>
 
-        {% if perms.badminton.add_tournament %}
-        <a href="{% url 'create_badminton_tournament' %}" class="btn btn-primary">
-            + Create New Tournament
-        </a>
-        {% endif %}
-    </div>
-
-    {% if tournaments %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for tournament in tournaments %}
-        <div class="col">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ tournament.name }}</h5>
-                    <p class="card-text">
-                        <strong>Place:</strong> {{ tournament.place }}<br>
-                        <strong>Date:</strong> {{ tournament.date }}
-                    </p>
-                    <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-primary btn-sm">
-                        View Tournament
-                    </a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="alert alert-info mt-4" role="alert">
-        No tournaments created yet. 
-        {% if perms.badminton.add_tournament %}
-            Be the first to <a href="{% url 'create_badminton_tournament' %}">create one</a>!
-        {% else %}
-            Please wait for an organiser to create one.
-        {% endif %}
-    </div>
+    {% if perms.badminton.add_tournament %}
+    <a href="{% url 'create_badminton_tournament' %}" class="btn btn-primary">
+      + Create New Tournament
+    </a>
     {% endif %}
+  </div>
+
+  {% if tournaments %}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for tournament in tournaments %}
+    <div class="col">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title">{{ tournament.name }}</h5>
+            <p class="card-text mb-2">
+              <strong>Place:</strong> {{ tournament.place }}<br>
+              <strong>Date:</strong> {{ tournament.date }}
+            </p>
+          </div>
+          <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-primary btn-sm mt-auto">
+            View Tournament →
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info mt-4 text-center" role="alert">
+    No tournaments created yet.
+    {% if perms.badminton.add_tournament %}
+      Be the first to <a href="{% url 'create_badminton_tournament' %}">create one</a>!
+    {% else %}
+      Please wait for an organiser to create one.
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
