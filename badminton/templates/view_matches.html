@@ -112,7 +112,8 @@
 
                     <td class="col-time">
                         {{ match.local_time|time:"H:i" }}
-                        {% if user.is_authenticated and match.updated_at != match.created_at %}
+                        {% if user.is_authenticated and match.updated_at|date:"c" != match.created_at|date:"c" %}
+
                             <br>
                             <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
                         {% endif %}
