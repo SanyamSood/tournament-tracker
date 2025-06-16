@@ -6,22 +6,28 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="text-center mb-4">Matches — {{ tournament.name }}</h2>
-    <p class=" text-center text-muted mb-2"> {{ tournament.place }} — {{ tournament.date }}</p>
+    <p class="text-center text-muted mb-2">{{ tournament.place }} — {{ tournament.date }}</p>
     <hr>
 
-    <div class="d-flex justify-content-start align-items-center mb-3 flex-wrap gap-2">
-    <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-primary btn-sm">
-        📊 Points Table
-    </a>
-    {% if perms.badminton.add_match %}
-    <a href="{% url 'add_match' tournament.id %}" class="btn btn-outline-primary btn-sm">
-        ➕ Add Match
-    </a>
-    {% endif %}
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-primary btn-sm">
+                📊 Points Table
+            </a>
+            {% if perms.badminton.add_match %}
+            <a href="{% url 'add_match' tournament.id %}" class="btn btn-outline-primary btn-sm">
+                ➕ Add Match
+            </a>
+            {% endif %}
+        </div>
 
-</div>
-
+        <!-- 🔍 Search Form -->
+        <form method="get" class="d-flex" role="search">
+            <input type="text" name="search" class="form-control form-control-sm me-2"
+                   placeholder="Search teams..." value="{{ search_query }}">
+            <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
 
     <style>
         table.table th,
@@ -46,6 +52,7 @@
             table.table {
                 font-size: 12px;
             }
+
             .btn-sm {
                 font-size: 12px;
                 padding: 2px 6px;
@@ -81,7 +88,6 @@
                     <td class="col-team text-start" title="{{ match.team1.name }}">{{ match.team1.name }}</td>
                     <td class="col-team text-start" title="{{ match.team2.name }}">{{ match.team2.name }}</td>
                     <td class="col-court">{{ match.court_number }}</td>
-
                     <td class="col-set">{{ match.set1_team1 }} - {{ match.set1_team2 }}</td>
 
                     <td class="col-set">
@@ -113,7 +119,6 @@
                     <td class="col-time">
                         {{ match.local_time|time:"H:i" }}
                         {% if user.is_authenticated and match.updated_at|date:"c" != match.created_at|date:"c" %}
-
                             <br>
                             <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
                         {% endif %}

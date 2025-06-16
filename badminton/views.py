@@ -8,6 +8,7 @@ from django.contrib import messages
 from .utils import update_points_table
 from datetime import timedelta
 import string
+from django.db.models import Q
 
 # ==== GROUP CHECKERS ====
 def is_organiser(user):
@@ -94,16 +95,36 @@ def tournament_detail(request, tournament_id):
         'current_tournament': tournament
     })
 
+
 def view_matches(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
-    matches = Match.objects.filter(group__tournament=tournament).order_by('created_at')
+
+    # Get the search query from GET parameters
+    search_query = request.GET.get('search', '').strip()
+
+    # Base queryset: matches for the tournament
+    matches = Match.objects.filter(group__tournament=tournament)
+
+    # If search query is provided, filter by team1 or team2 name
+    if search_query:
+        matches = matches.filter(
+            Q(team1__name__icontains=search_query) |
+            Q(team2__name__icontains=search_query)
+        )
+
+    # Order matches by creation time
+    matches = matches.order_by('created_at')
+
+    # Add local time attributes to each match
     for match in matches:
         match.local_time = match.created_at + timedelta(hours=5, minutes=30)
         match.local_updated_time = match.updated_at + timedelta(hours=5, minutes=30)
+
     return render(request, 'view_matches.html', {
         'tournament': tournament,
         'matches': matches,
         'current_tournament': tournament,
+        'search_query': search_query,  # Pass it to template for form value
     })
 
 def load_teams(request):
