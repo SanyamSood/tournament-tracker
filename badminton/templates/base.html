@@ -163,7 +163,7 @@
             <li>
               <form method="post" action="{% url 'logout' %}" class="px-3">
                 {% csrf_token %}
-                <button type="submit" class="dropdown-item">🚪 Logout</button>
+                <button type="submit" class="dropdown-item">Logout</button>
               </form>
             </li>
           </ul>
@@ -171,7 +171,7 @@
         {% else %}
         <!-- Login button -->
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">🔑 Login</a>
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
         </li>
         {% endif %}
 
@@ -190,7 +190,7 @@
 
 <!-- Footer -->
 <footer>
-  <p>🏸 Built for Tournament Management with ❤️</p>
+  <p>Built for Tournament Management with ❤️</p>
 </footer>
 
 <!-- Bootstrap JS -->
