@@ -4,40 +4,79 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #fff;
+  }
+
+  .glass-card .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+  }
+
+  .glass-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .glass-card .form-label {
+    color: #fff;
+  }
+
+  .btn-glass {
+    background-color: rgba(0, 123, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+
+  .btn-glass:hover {
+    background-color: rgba(0, 123, 255, 0.3);
+  }
+
+  .alert-glass {
+    background: rgba(255, 0, 0, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+</style>
+
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-md-8 col-lg-5">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white text-center">
-          <h4 class="mb-0">🔐 Login</h4>
-        </div>
-        <div class="card-body">
+      <div class="glass-card p-4">
 
-          {% if form.errors %}
-            <div class="alert alert-danger">
-              {{ form.non_field_errors|join:", " }}
-            </div>
-          {% endif %}
+        <h4 class="text-center mb-4">🔐 Login</h4>
 
-          <form method="post" autocomplete="off" novalidate>
-            {% csrf_token %}
+        {% if form.errors %}
+          <div class="alert alert-glass text-center">
+            {{ form.non_field_errors|join:", " }}
+          </div>
+        {% endif %}
 
-            <div class="mb-3">
-              {{ form.username.label_tag }}
-              {{ form.username|add_class:"form-control"|attr:"autofocus" }}
-            </div>
+        <form method="post" autocomplete="off" novalidate>
+          {% csrf_token %}
 
-            <div class="mb-3">
-              {{ form.password.label_tag }}
-              {{ form.password|add_class:"form-control" }}
-            </div>
+          <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username|add_class:"form-control"|attr:"placeholder:Username"|attr:"autofocus" }}
+          </div>
 
-            <div class="d-grid">
-              <button type="submit" class="btn btn-primary">Login</button>
-            </div>
-          </form>
+          <div class="mb-3">
+            {{ form.password.label_tag }}
+            {{ form.password|add_class:"form-control"|attr:"placeholder:Password" }}
+          </div>
 
-        </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-glass">🔓 Login</button>
+          </div>
+        </form>
+
       </div>
     </div>
   </div>

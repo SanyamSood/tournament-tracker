@@ -2,24 +2,31 @@
 {% block title %}Add Teams{% endblock %}
 
 {% block content %}
-<div class="container my-4">
+<div class="container my-5">
   {% if perms.badminton.add_team %}
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Add New Teams — {{ tournament.name }}</h4>
+    <div class="card shadow-lg border-0 glass-card">
+      <div class="card-header text-white text-center bg-gradient-primary rounded-top-4">
+        <h3 class="mb-0">Add Teams — {{ tournament.name }}</h3>
       </div>
 
-      <div class="card-body">
-        <form method="post" id="teamForm">
+      <div class="card-body glass-inner">
+        <form method="post" id="teamForm" novalidate>
           {% csrf_token %}
           {{ formset.management_form }}
 
           <div id="formContainer">
             {% for form in formset %}
-              <div class="team-form border p-3 mb-4 rounded bg-light">
+              <div class="team-form team-glass p-4 rounded-4 mb-4">
                 <div class="mb-3">
                   <label class="form-label">Team Name</label>
-                  {{ form.name }}
+                  <input 
+  type="text" 
+  name="form-{{ forloop.counter0 }}-name" 
+  value="{{ form.name.value|default:'' }}" 
+  class="form-control" 
+  required
+>
+
                   {% if form.name.errors %}
                     <div class="text-danger small">{{ form.name.errors.0 }}</div>
                   {% endif %}
@@ -27,7 +34,7 @@
 
                 <div class="mb-3">
                   <label class="form-label">Select Group</label>
-                  <select name="group_{{ forloop.counter0 }}" class="form-select group-select" required>
+                  <select name="group_{{ forloop.counter0 }}" class="form-select" required>
                     <option value="">-- Select Group --</option>
                     {% for group in groups %}
                       <option value="{{ group.id }}">{{ group.name }}</option>
@@ -38,13 +45,13 @@
             {% endfor %}
           </div>
 
-          <div class="d-grid d-md-flex justify-content-md-start gap-2 mb-3">
-            <button type="button" class="btn btn-outline-primary" onclick="addForm()">➕ Add Another Team</button>
+          <div class="d-grid d-md-flex justify-content-md-start gap-3 mb-4">
+            <button type="button" class="btn btn-outline-primary rounded-pill px-4" onclick="addForm()">➕ Add Another Team</button>
           </div>
 
-          <div class="d-grid d-sm-flex justify-content-sm-start gap-2">
-            <button type="submit" class="btn btn-success">💾 Save All Teams</button>
-            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-secondary">↩️ Back</a>
+          <div class="d-grid d-sm-flex justify-content-sm-start gap-3">
+            <button type="submit" class="btn btn-success rounded-pill px-4">💾 Save All Teams</button>
+            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-secondary rounded-pill px-4">↩️ Back</a>
           </div>
         </form>
       </div>
@@ -56,6 +63,54 @@
   {% endif %}
 </div>
 
+<style>
+  .glass-card {
+    backdrop-filter: blur(10px);
+    background: rgba(30, 30, 30, 0.4);  /* Dark frosted glass */
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    color: #fff;
+  }
+
+  .glass-inner {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 2rem;
+  }
+
+  .team-glass {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, rgba(13,110,253,0.9), rgba(0,123,255,0.8));
+  }
+
+  .btn-outline-primary:hover,
+  .btn-success:hover,
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  }
+
+  .form-control,
+  .form-select {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    color: #000;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+    border-color: #86b7fe;
+    background-color: #fff;
+  }
+</style>
+
 <script>
   let formIndex = Number("{{ formset.total_form_count }}");
   const groupsHTML = `{% for group in groups %}<option value="{{ group.id }}">{{ group.name }}</option>{% endfor %}`;
@@ -63,7 +118,7 @@
   function addForm() {
     const container = document.getElementById('formContainer');
     const newForm = document.createElement('div');
-    newForm.className = 'team-form border p-3 mb-4 rounded bg-light';
+    newForm.className = 'team-form team-glass p-4 rounded-4 mb-4';
 
     newForm.innerHTML = `
       <div class="mb-3">
@@ -72,15 +127,14 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Select Group</label>
-        <select name="group_${formIndex}" class="form-select group-select" required>
+        <select name="group_${formIndex}" class="form-select" required>
           <option value="">-- Select Group --</option>
           ${groupsHTML}
         </select>
       </div>
     `;
-    container.appendChild(newForm);
 
-    // Update management form
+    container.appendChild(newForm);
     document.getElementById('id_form-TOTAL_FORMS').value = ++formIndex;
   }
 </script>

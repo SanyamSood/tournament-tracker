@@ -1,40 +1,91 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
 
 {% block title %}Edit Tournament — {{ tournament.name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<style>
+  .modern-input {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+  }
+
+  .modern-input:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.3);
+    outline: none;
+  }
+
+  .modern-label {
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: #e2e2e2;
+  }
+
+  .modern-select {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    appearance: none;
+  }
+
+  .modern-select:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.3);
+    outline: none;
+  }
+</style>
+
+<div class="container mt-5 mb-5">
   {% if perms.badminton.change_tournament %}
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-8">
-        <div class="card shadow-lg">
-          <div class="card-header bg-info text-white text-center">
-            <h2 class="h4 h-md3 mb-0">Edit Tournament: {{ tournament.name }}</h2>
+        <div class="card shadow-lg border-0" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);">
+          <div class="card-header bg-info text-white text-center rounded-top">
+            <h2 class="h4 mb-0">Edit Tournament: {{ tournament.name }}</h2>
           </div>
 
           <div class="card-body">
             <form method="post" novalidate>
               {% csrf_token %}
 
-              <div class="mb-3">
-                {{ form.name.label_tag }}
-                {{ form.name|add_class:"form-control" }}
+              <div class="mb-4">
+                <label for="{{ form.name.id_for_label }}" class="modern-label">Tournament Name</label>
+                <input type="text" name="{{ form.name.name }}" value="{{ form.name.value|default_if_none:'' }}" class="modern-input" id="{{ form.name.id_for_label }}">
+                {% if form.name.errors %}
+                  <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                {% endif %}
               </div>
 
-              <div class="mb-3">
-                {{ form.place.label_tag }}
-                {{ form.place|add_class:"form-control" }}
+              <div class="mb-4">
+                <label for="{{ form.place.id_for_label }}" class="modern-label">Location</label>
+                <input type="text" name="{{ form.place.name }}" value="{{ form.place.value|default_if_none:'' }}" class="modern-input" id="{{ form.place.id_for_label }}">
+                {% if form.place.errors %}
+                  <div class="text-danger small mt-1">{{ form.place.errors.0 }}</div>
+                {% endif %}
               </div>
 
-              <div class="mb-3">
-                {{ form.date.label_tag }}
-                {{ form.date|add_class:"form-control" }}
+              <div class="mb-4">
+                <label for="{{ form.date.id_for_label }}" class="modern-label">Date</label>
+                <input type="date" name="{{ form.date.name }}" value="{{ form.date.value|default_if_none:'' }}" class="modern-input" id="{{ form.date.id_for_label }}">
+                {% if form.date.errors %}
+                  <div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>
+                {% endif %}
               </div>
-
-              <div class="mb-3">
-                {{ form.num_groups.label_tag }}
-                {{ form.num_groups|add_class:"form-select" }}
+                
               </div>
 
               <div class="d-grid gap-2 mt-4">

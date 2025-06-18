@@ -4,141 +4,127 @@
 {% block title %}View Matches — {{ tournament.name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Matches — {{ tournament.name }}</h2>
-    <p class="text-center text-muted mb-2">{{ tournament.place }} — {{ tournament.date }}</p>
-    <hr>
+<div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-primary btn-sm">
-                📊 Points Table
-            </a>
-            {% if perms.badminton.add_match %}
-            <a href="{% url 'add_match' tournament.id %}" class="btn btn-outline-primary btn-sm">
-                ➕ Add Match
-            </a>
-            {% endif %}
+    <!-- Tournament Header and Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="text-white">{{ tournament.name }}</h2>
+        <div class="d-flex gap-2 mt-2">
         </div>
-
-        <!-- 🔍 Search Form -->
-        <form method="get" class="d-flex" role="search">
-            <input type="text" name="search" class="form-control form-control-sm me-2"
-                   placeholder="Search teams..." value="{{ search_query }}">
-            <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
-        </form>
     </div>
 
-    <style>
-        table.table th,
-        table.table td {
-            white-space: nowrap;
-            text-align: center;
-            vertical-align: middle;
-            padding: 6px 10px;
-        }
+    <!-- Tournament Info -->
+    <div class="glass-card p-4 rounded-4 mb-4 text-white shadow-sm">
+        <p class="mb-2"><i class="bi bi-geo-alt-fill me-2"></i><strong>Place:</strong> {{ tournament.place }}</p>
+        <p class="mb-0"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> {{ tournament.date|date:"F j, Y" }}</p>
+    </div>
 
-        .col-match-no { width: 5%; }
-        .col-group    { width: 6%; }
-        .col-team     { width: 18%; text-align: left; }
-        .col-court    { width: 6%; }
-        .col-set      { width: 8%; }
-        .col-score    { width: 10%; }
-        .col-winner   { width: 14%; }
-        .col-time     { width: 10%; }
-        .col-edit     { width: 8%; }
+    <!-- Action Buttons -->
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-primary btn-glow rounded-pill px-4">Points Table</a>
+        {% if perms.badminton.add_match %}
+            <a href="{% url 'add_match' tournament.id %}" class="btn btn-success btn-glow rounded-pill px-4">+ Add Match</a>
+        {% endif %}
+    </div>
 
-        @media (max-width: 768px) {
-            table.table {
-                font-size: 12px;
-            }
+    <!-- Search Bar -->
+     <div class="d-flex justify-content-between align-items-center mb-3 mt-5 flex-wrap">
+        <h4 class="text-white mb-2">Matches</h4>
+        <input type="text" id="teamSearch" class="form-control w-auto" placeholder="Search team..." oninput="filterGroups()">
+    </div>
 
-            .btn-sm {
-                font-size: 12px;
-                padding: 2px 6px;
-            }
-        }
-    </style>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th class="col-match-no">#</th>
-                    <th class="col-group">Group</th>
-                    <th class="col-team">Team 1</th>
-                    <th class="col-team">Team 2</th>
-                    <th class="col-court">Court</th>
-                    <th class="col-set">Set 1</th>
-                    <th class="col-set">Set 2</th>
-                    <th class="col-set">Set 3</th>
-                    <th class="col-score">Match Score</th>
-                    <th class="col-winner">Winner</th>
-                    <th class="col-time">Time</th>
-                    {% if perms.badminton.change_match %}
-                        <th class="col-edit">Edit</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for match in matches %}
-                <tr>
-                    <td class="col-match-no">{{ forloop.counter }}</td>
-                    <td class="col-group">{{ match.group.name }}</td>
-                    <td class="col-team text-start" title="{{ match.team1.name }}">{{ match.team1.name }}</td>
-                    <td class="col-team text-start" title="{{ match.team2.name }}">{{ match.team2.name }}</td>
-                    <td class="col-court">{{ match.court_number }}</td>
-                    <td class="col-set">{{ match.set1_team1 }} - {{ match.set1_team2 }}</td>
-
-                    <td class="col-set">
-                        {% if match.set2_team1 is not None and match.set2_team2 is not None %}
-                            {{ match.set2_team1 }} - {{ match.set2_team2 }}
-                        {% else %}
-                            <span class="text-muted">—</span>
+    <!-- Matches Table Card -->
+    <div class="glass-card p-4 rounded-4 shadow-sm text-white mb-5">
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered table-hover align-middle text-center mb-0" id="matchesTable">
+                <thead class="table-light text-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Group</th>
+                        <th>Team 1</th>
+                        <th>Team 2</th>
+                        <th>Court</th>
+                        <th>Set 1</th>
+                        <th>Set 2</th>
+                        <th>Set 3</th>
+                        <th>Match Score</th>
+                        <th>Winner</th>
+                        <th>Time</th>
+                        {% if perms.badminton.change_match %}
+                            <th>Edit</th>
                         {% endif %}
-                    </td>
-
-                    <td class="col-set">
-                        {% if match.set3_team1 is not None and match.set3_team2 is not None %}
-                            {{ match.set3_team1 }} - {{ match.set3_team2 }}
-                        {% else %}
-                            <span class="text-muted">—</span>
-                        {% endif %}
-                    </td>
-
-                    <td class="col-score">{{ match.match_score }}</td>
-
-                    <td class="col-winner">
-                        {% if match.winner %}
-                            <span class="fw-bold text-success" title="{{ match.winner.name }}">{{ match.winner.name }}</span>
-                        {% else %}
-                            <span class="text-warning">TBD</span>
-                        {% endif %}
-                    </td>
-
-                    <td class="col-time">
-                        {{ match.local_time|time:"H:i" }}
-                        {% if user.is_authenticated and match.updated_at|date:"c" != match.created_at|date:"c" %}
-                            <br>
-                            <small class="text-muted">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
-                        {% endif %}
-                    </td>
-
-                    {% if perms.badminton.change_match %}
-                    <td class="col-edit">
-                        <a href="{% url 'edit_match' tournament.id match.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                    </td>
-                    {% endif %}
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="{% if perms.badminton.change_match %}12{% else %}11{% endif %}" class="text-center text-muted">
-                        No matches recorded yet.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for match in matches %}
+                        <tr class="match-row">
+                            <td>{{ forloop.counter }}</td>
+                            <td class="group-cell">{{ match.group.name }}</td>
+                            <td class="team-cell text-start">{{ match.team1.name }}</td>
+                            <td class="team-cell text-start">{{ match.team2.name }}</td>
+                            <td>{{ match.court_number }}</td>
+                            <td>{{ match.set1_team1 }} - {{ match.set1_team2 }}</td>
+                            <td>
+                                {% if match.set2_team1 is not None and match.set2_team2 is not None %}
+                                    {{ match.set2_team1 }} - {{ match.set2_team2 }}
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if match.set3_team1 is not None and match.set3_team2 is not None %}
+                                    {{ match.set3_team1 }} - {{ match.set3_team2 }}
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ match.match_score }}</td>
+                            <td>
+                                {% if match.winner %}
+                                    <span class="fw-bold text-success">{{ match.winner.name }}</span>
+                                {% else %}
+                                    <span class="text-warning">TBD</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ match.local_time|time:"H:i" }}
+                                {% if user.is_authenticated and match.updated_at|date:"c" > match.created_at|date:"c" %}
+                                    <br>
+                                    <small style="color:#91cfff;">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
+                                {% endif %}
+                            </td>
+                            {% if perms.badminton.change_match %}
+                                <td>
+                                    <a href="{% url 'edit_match' tournament.id match.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="{% if perms.badminton.change_match %}12{% else %}11{% endif %}" class="text-center text-muted">
+                                No matches recorded yet.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<!-- Script -->
+<script>
+function filterMatches() {
+    const query = document.getElementById('matchSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('.match-row');
+
+    rows.forEach(row => {
+        const teamCells = row.querySelectorAll('.team-cell, .group-cell');
+        const matchFound = Array.from(teamCells).some(cell =>
+            cell.textContent.toLowerCase().includes(query)
+        );
+        row.style.display = matchFound ? '' : 'none';
+    });
+}
+</script>
 {% endblock %}

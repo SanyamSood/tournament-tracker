@@ -1,101 +1,148 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ tournament.name }} — Badminton Tournament{% endblock %}
 
 {% block content %}
+<div class="container py-5">
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">{{ tournament.name }}</h2>
-    <p class=" text-center text-muted mb-2">{{ tournament.place }} — {{ tournament.date }}</p>
-    <hr>
-    <div class="d-flex flex-wrap gap-2">
-            <a href="{% url 'view_matches' tournament.id %}" class="btn btn-outline-primary btn-sm">
-                👀 View Matches
-            </a>
-
-            {% if user.is_authenticated %}
-                {% if perms.badminton.change_team %}
-                <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-outline-primary btn-sm">
-                    ✏️ Edit Teams
-                </a>
-                {% endif %}
-                {% if perms.badminton.add_match %}
-                <a href="{% url 'add_match' tournament.id %}" class="btn btn-outline-primary btn-sm">
-                    ➕ Add Match
-                </a>
-                {% endif %}
+    <!-- Tournament Header and Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="text-white">{{ tournament.name }}</h2>
+        <div class="d-flex gap-2 mt-2">
+            {% if perms.badminton.change_tournament %}
+                <a href="{% url 'edit_tournament' tournament.id %}" class="btn btn-warning btn-glow rounded-pill">Edit</a>
+            {% endif %}
+            {% if perms.badminton.delete_tournament %}
+                <a href="{% url 'delete_tournament' tournament.id %}" class="btn btn-danger btn-glow rounded-pill">Delete</a>
             {% endif %}
         </div>
-</div>
+    </div>
 
+    <!-- Tournament Info -->
+    <div class="glass-card p-4 rounded-4 mb-4 text-white shadow-sm">
+        <p class="mb-2"><i class="bi bi-geo-alt-fill me-2"></i><strong>Place:</strong> {{ tournament.place }}</p>
+        <p class="mb-0"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> {{ tournament.date|date:"F j, Y" }}</p>
+    </div>
 
-    <style>
-        .team-col {
-            width: 200px;
-            min-width: 150px;
-            max-width: 100%;
-            text-align: left;
-            word-wrap: break-word;
-        }
+    <!-- Action Buttons -->
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        <a href="{% url 'view_matches' tournament.id %}" class="btn btn-primary btn-glow rounded-pill px-4">View Matches</a>
+        {% if perms.badminton.add_match %}
+            <a href="{% url 'add_match' tournament.id %}" class="btn btn-success btn-glow rounded-pill px-4">+ Add Match</a>
+        {% endif %}
+        {% if perms.badminton.add_team %}
+            <a href="{% url 'add_team' tournament.id %}" class="btn btn-info btn-glow rounded-pill px-4">+ Add Team</a>
+        {% endif %}
+        {% if perms.badminton.change_tournament %}
+            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-secondary btn-glow rounded-pill px-4">Edit Groups/Teams</a>
+        {% endif %}
+    </div>
 
-        .group-heading {
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            border-left: 5px solid #0d6efd;
-        }
+    <!-- Points Table Header & Search -->
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-5 flex-wrap">
+        <h4 class="text-white mb-2">Points Table</h4>
+        <input type="text" id="teamSearch" class="form-control w-auto" placeholder="Search team..." oninput="filterGroups()">
+    </div>
 
-        .group-heading h4 {
-            margin: 0;
-        }
-
-        @media (max-width: 576px) {
-            .team-col {
-                white-space: normal;
-            }
-        }
-    </style>
-
+    <!-- Groups and Tables -->
     {% for group in groups %}
-    <div class="group-heading">
-        <h4 class="mb-0">Group {{ group.group|upper }}</h4>
-    </div>
+        <div class="glass-card mb-4 p-3 rounded-4 shadow-sm group-block" data-group="{{ group.group }}">
+            <!-- Group Header -->
+            <div class="d-flex justify-content-between align-items-center mb-2 group-header"
+                onclick="toggleGroup('{{ group.group }}')"
+                style="cursor: pointer;">
+                <h5 class="text-white mb-0">
+                    <span id="arrow-{{ group.group }}" class="me-2">▼</span> Group {{ group.group }}
+                </h5>
+            </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th class="team-col">Team</th>
-                    <th>Played</th>
-                    <th>Won</th>
-                    <th>Lost</th>
-                    <th>Sets Won</th>
-                    <th>Sets Lost</th>
-                    <th>Set Diff</th>
-                    <th>Pts Scored</th>
-                    <th>Pts Conceded</th>
-                    <th>Pts Diff</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for team in group.table %}
-                <tr>
-                    <td class="team-col" title="{{ team.name }}">{{ team.name }}</td>
-                    <td>{{ team.played }}</td>
-                    <td>{{ team.won }}</td>
-                    <td>{{ team.lost }}</td>
-                    <td>{{ team.sets_won }}</td>
-                    <td>{{ team.sets_lost }}</td>
-                    <td>{{ team.set_diff }}</td>
-                    <td>{{ team.points_scored }}</td>
-                    <td>{{ team.points_conceded }}</td>
-                    <td>{{ team.point_diff }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            <!-- Table -->
+            <div id="group-{{ group.group }}" class="group-table">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover table-bordered text-center align-middle mb-0">
+                        <thead class="table-light text-dark">
+                            <tr>
+                                <th>Team</th>
+                                <th>Played</th>
+                                <th>Won</th>
+                                <th>Lost</th>
+                                <th>Sets Won</th>
+                                <th>Sets Lost</th>
+                                <th>Set Diff</th>
+                                <th>Points Scored</th>
+                                <th>Points Conceded</th>
+                                <th>Point Diff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in group.table %}
+                                <tr>
+                                    <td class="team-name">{{ team.name }}</td>
+                                    <td>{{ team.played }}</td>
+                                    <td>{{ team.won }}</td>
+                                    <td>{{ team.lost }}</td>
+                                    <td>{{ team.sets_won }}</td>
+                                    <td>{{ team.sets_lost }}</td>
+                                    <td>{{ team.set_diff }}</td>
+                                    <td>{{ team.points_scored }}</td>
+                                    <td>{{ team.points_conceded }}</td>
+                                    <td>{{ team.point_diff }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="10">No data yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     {% endfor %}
+
 </div>
+
+<!-- Scripts -->
+<script>
+function toggleGroup(groupId) {
+    const groupDiv = document.getElementById('group-' + groupId);
+    const arrow = document.getElementById('arrow-' + groupId);
+
+    const isHidden = groupDiv.style.display === 'none';
+    groupDiv.style.display = isHidden ? 'block' : 'none';
+    arrow.innerText = isHidden ? '▼' : '▶';
+}
+
+function filterGroups() {
+    const query = document.getElementById('teamSearch').value.trim().toLowerCase();
+    const groupBlocks = document.querySelectorAll('.group-block');
+
+    if (!query) {
+        groupBlocks.forEach(block => {
+            block.style.display = 'block';
+        });
+        return;
+    }
+
+    groupBlocks.forEach(block => {
+        const teamNames = block.querySelectorAll('.team-name');
+        let found = false;
+        teamNames.forEach(team => {
+            if (team.textContent.toLowerCase().includes(query)) {
+                found = true;
+            }
+        });
+        block.style.display = found ? 'block' : 'none';
+    });
+}
+</script>
+
+<!-- Styles -->
+<style>
+.group-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+</style>
+
 {% endblock %}

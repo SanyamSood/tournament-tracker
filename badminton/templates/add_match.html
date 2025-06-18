@@ -1,184 +1,235 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container py-5">
   {% if perms.badminton.add_match %}
-    <div class="card shadow-lg">
-      <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <h2 class="mb-0 text-center text-md-start">Add Match - {{ tournament.name }}</h2>
+    <div class="glass-card p-4 rounded-5 shadow-lg text-white">
+
+      <!-- Title -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold display-6">Add Match</h2>
+          <p class="lead">{{ tournament.name }} | {{ tournament.place }} — {{ tournament.date }}</p>
+        </div>
       </div>
 
-      <div class="card-body">
-        <form method="post" id="matchForm">
-          {% csrf_token %}
+      <!-- Form -->
+      <form method="post" id="matchForm" novalidate>
+        {% csrf_token %}
 
-          <!-- Group -->
-          <div class="form-group mb-4">
-            <label for="{{ form.group.id_for_label }}">{{ form.group.label }}</label>
-            {{ form.group }}
+        <!-- Group -->
+        <div class="form-floating mb-4">
+          {{ form.group }}
+          <label for="{{ form.group.id_for_label }}">Select Group</label>
+        </div>
+
+        <!-- Court Number -->
+        <div class="form-floating mb-4">
+          {{ form.court_number }}
+          <label for="{{ form.court_number.id_for_label }}">Court Number</label>
+        </div>
+
+        <!-- Teams -->
+        <div class="mb-4">
+          <label class="section-label">Teams</label>
+          <div class="row g-3">
+            <div class="col-12 col-md-6 form-floating">
+              {{ form.team1 }}
+              <label for="{{ form.team1.id_for_label }}">Team 1</label>
+            </div>
+            <div class="col-12 col-md-6 form-floating">
+              {{ form.team2 }}
+              <label for="{{ form.team2.id_for_label }}">Team 2</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Set Scores Section -->
+        <div class="mt-5">
+          <h5 class="text-center fw-bold mb-4">🎯 Set Scores</h5>
+          <div class="row text-center fw-bold mb-2">
+            <div class="col-2">Set</div>
+            <div class="col-5" id="team1Name">Team 1</div>
+            <div class="col-5" id="team2Name">Team 2</div>
           </div>
 
-          <!-- Court Number -->
-          <div class="form-group mb-4">
-            <label for="{{ form.court_number.id_for_label }}">{{ form.court_number.label }}</label>
-            {{ form.court_number }}
-          </div>
-
-          <!-- Teams -->
-          <div class="form-group mb-4">
-            <label class="fw-bold d-block mb-2">Teams:</label>
-            <div class="row">
-              <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <label for="{{ form.team1.id_for_label }}">Team 1</label>
-                {{ form.team1 }}
+          {% for i in "123"|make_list %}
+            <div class="row align-items-center mb-3 glass-subcard py-3 rounded-3">
+              <div class="col-2 text-center"><strong>{{ i }}</strong></div>
+              <div class="col-5">
+                {% if i == "1" %}{{ form.set1_team1 }}
+                {% elif i == "2" %}{{ form.set2_team1 }}
+                {% elif i == "3" %}{{ form.set3_team1 }}
+                {% endif %}
               </div>
-              <div class="col-12 col-md-6">
-                <label for="{{ form.team2.id_for_label }}">Team 2</label>
-                {{ form.team2 }}
+              <div class="col-5">
+                {% if i == "1" %}{{ form.set1_team2 }}
+                {% elif i == "2" %}{{ form.set2_team2 }}
+                {% elif i == "3" %}{{ form.set3_team2 }}
+                {% endif %}
               </div>
             </div>
-          </div>
+          {% endfor %}
+        </div>
 
-          <!-- Set Scores -->
-          <div class="form-group mb-4">
-            <h5 class="text-center mb-4">Set Scores</h5>
+        <!-- Submit -->
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-glass btn-lg rounded-pill fw-bold">✅ Save Match</button>
+        </div>
+      </form>
 
-            <!-- Header Row -->
-            <div class="row fw-bold text-center mb-2">
-              <div class="col-2"></div>
-              <div class="col-5" id="team1Name">Team 1</div>
-              <div class="col-5" id="team2Name">Team 2</div>
-            </div>
-
-            <!-- Set 1 -->
-            <div class="row align-items-center mb-3">
-              <div class="col-2 text-center"><strong>1</strong></div>
-              <div class="col-5">{{ form.set1_team1 }}</div>
-              <div class="col-5">{{ form.set1_team2 }}</div>
-            </div>
-
-            <!-- Set 2 -->
-            <div class="row align-items-center mb-3">
-              <div class="col-2 text-center"><strong>2</strong></div>
-              <div class="col-5">{{ form.set2_team1 }}</div>
-              <div class="col-5">{{ form.set2_team2 }}</div>
-            </div>
-
-            <!-- Set 3 -->
-            <div class="row align-items-center mb-3">
-              <div class="col-2 text-center"><strong>3</strong></div>
-              <div class="col-5">{{ form.set3_team1 }}</div>
-              <div class="col-5">{{ form.set3_team2 }}</div>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary w-100 fw-bold py-2">✅ Save Match</button>
-        </form>
-      </div>
-
-      <div class="card-footer text-center">
-        <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-outline-secondary mt-2 w-100 w-sm-auto">← Back to Tournament</a>
+      <!-- Back Link -->
+      <div class="text-center mt-4">
+        <a href="{% url 'tournament_detail' tournament.id %}" class="text-white-50 text-decoration-none">
+          ← Back to Tournament
+        </a>
       </div>
     </div>
 
-    <!-- jQuery -->
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Team Handling Script -->
     <script>
       $('#id_group').change(function () {
-        var groupId = $(this).val();
-        $.ajax({
-          url: "{% url 'ajax_load_teams' %}",
-          data: { 'group_id': groupId },
-          success: function (data) {
-            let team1 = $('#id_team1');
-            let team2 = $('#id_team2');
-            team1.empty().append('<option value="">---------</option>');
-            team2.empty().append('<option value="">---------</option>');
-
-            data.forEach(function (team) {
-              team1.append('<option value="' + team.id + '">' + team.name + '</option>');
-              team2.append('<option value="' + team.id + '">' + team.name + '</option>');
-            });
-
-            $('#team1Name').text("Team 1");
-            $('#team2Name').text("Team 2");
-          }
+        $.get("{% url 'ajax_load_teams' %}", { group_id: $(this).val() }, function (data) {
+          const t1 = $('#id_team1').empty().append('<option value="">---------</option>');
+          const t2 = $('#id_team2').empty().append('<option value="">---------</option>');
+          data.forEach(team => {
+            t1.append(`<option value="${team.id}">${team.name}</option>`);
+            t2.append(`<option value="${team.id}">${team.name}</option>`);
+          });
+          $('#team1Name').text("Team 1");
+          $('#team2Name').text("Team 2");
         });
       });
 
       $('#id_team1, #id_team2').change(function () {
-        const team1Text = $('#id_team1 option:selected').text();
-        const team2Text = $('#id_team2 option:selected').text();
-        const team1Val = $('#id_team1').val();
-        const team2Val = $('#id_team2').val();
+        const t1 = $('#id_team1 option:selected');
+        const t2 = $('#id_team2 option:selected');
+        $('#team1Name').text(t1.val() ? t1.text() : "Team 1");
+        $('#team2Name').text(t2.val() ? t2.text() : "Team 2");
 
-        $('#team1Name').text(team1Val ? team1Text : "Team 1");
-        $('#team2Name').text(team2Val ? team2Text : "Team 2");
-
-        if (team1Val && team2Val && team1Val === team2Val) {
+        if (t1.val() && t2.val() && t1.val() === t2.val()) {
           alert("Team 1 and Team 2 cannot be the same.");
-          $('#id_team1').val("");
-          $('#id_team2').val("");
+          $('#id_team1, #id_team2').val("");
           $('#team1Name').text("Team 1");
           $('#team2Name').text("Team 2");
         }
       });
 
       $(document).ready(function () {
-        const team1Text = $('#id_team1 option:selected').text();
-        const team2Text = $('#id_team2 option:selected').text();
-        const team1Val = $('#id_team1').val();
-        const team2Val = $('#id_team2').val();
-
-        $('#team1Name').text(team1Val ? team1Text : "Team 1");
-        $('#team2Name').text(team2Val ? team2Text : "Team 2");
+        const t1 = $('#id_team1 option:selected');
+        const t2 = $('#id_team2 option:selected');
+        $('#team1Name').text(t1.val() ? t1.text() : "Team 1");
+        $('#team2Name').text(t2.val() ? t2.text() : "Team 2");
       });
     </script>
 
+    <!-- Styling -->
     <style>
-      .form-group input,
-      .form-group select {
-        width: 100%;
-        padding: 0.45rem;
-        border: 1px solid #ccc;
-        border-radius: 0.25rem;
+      label {
+        background: transparent !important;
+        color: #e0e0e0;
+        font-weight: 500;
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
       }
 
-      .form-group input:focus,
-      .form-group select:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
+      .section-label {
+        display: block;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+        color: #f1f1f1;
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.15);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      .glass-subcard {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+      }
+
+      .form-floating > label {
+        color: #ccc;
+        background: transparent;
+      }
+
+      select,
+      input {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #fff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 0.375rem;
+        padding: 0.75rem 1rem;
+      }
+
+      select:focus,
+      input:focus {
+        box-shadow: 0 0 10px rgba(13, 110, 253, 0.4);
+        background-color: rgba(255, 255, 255, 0.2) !important;
         outline: none;
       }
 
-      .form-group label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 0.4rem;
+      select option {
+        background-color: #1a1a1a;
+        color: white;
       }
 
-      .card-footer a.btn:hover {
-        background-color: #e2e6ea;
-        color: #000;
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414 5.293 8.707a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1rem;
+        padding-right: 2.5rem;
+      }
+
+      .btn-glass {
+        background: linear-gradient(to right, #0d6efd, #6610f2);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+      }
+
+      .btn-glass:hover {
+        background: linear-gradient(to right, #6610f2, #0d6efd);
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
       }
 
       @media (max-width: 576px) {
-        .card-header h2 {
-          font-size: 1.3rem;
-          text-align: center;
+        .display-6 {
+          font-size: 1.7rem;
         }
 
-        .btn,
-        .form-group input,
-        .form-group select {
+        .lead {
+          font-size: 1rem;
+        }
+
+        .btn-glass {
+          font-size: 1rem;
+        }
+
+        select,
+        input {
           font-size: 0.95rem;
         }
       }
     </style>
-
   {% else %}
     <div class="alert alert-danger text-center mt-4">
       <strong>Access Denied:</strong> You do not have permission to add matches.
