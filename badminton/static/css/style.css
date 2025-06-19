@@ -71,7 +71,6 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-
 /* === GLOBAL BASE STYLES === */
 body {
   margin: 0;
@@ -136,6 +135,8 @@ a.text-decoration-none:hover .glass-card,
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   transition: background 0.3s ease;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
 }
 
 /* Prevent unwanted transform overrides */
@@ -162,10 +163,55 @@ article:hover {
   }
 }
 
-.group-header:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  transition: background 0.3s ease;
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
+/* Glass card used in confirm delete page */
+.glass-card.confirm-delete {
+  backdrop-filter: blur(10px);
+  background: rgba(220, 53, 69, 0.15);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.bg-gradient {
+  background: linear-gradient(135deg, #dc3545, #b02a37);
+}
+
+.glass-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+select.form-select option {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.table-black {
+  background-color: #000 !important;
+  color: #fff;
+  border-color: #444;
+}
+
+.table-black th {
+  background-color: #111 !important;
+  color: #fff;
+}
+
+.table-black td {
+  background-color: #000 !important;
+  color: #eee;
+}
+
+.table-black.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #111 !important;
+}
+
+.table-black.table-striped tbody tr:nth-of-type(even) {
+  background-color: #1a1a1a !important;
 }

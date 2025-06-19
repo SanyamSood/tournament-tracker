@@ -2,49 +2,10 @@
 {% block title %}Edit Groups & Teams{% endblock %}
 
 {% block content %}
-<style>
-  .table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.03); /* even darker */
-}
-
-.table-striped > tbody > tr:nth-of-type(even) {
-  background-color: rgba(255, 255, 255, 0.06);
-}
-
-  .modern-input {
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: white;
-    border-radius: 0.4rem;
-    padding: 0.45rem 0.75rem;
-    width: 100%;
-    backdrop-filter: blur(5px);
-    transition: 0.2s ease;
-  }
-
-  .modern-input:focus {
-    border-color: #0dcaf0;
-    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.25);
-    outline: none;
-  }
-
-  ::placeholder {
-    color: #ccc;
-  }
-
-  .table-dark th {
-    background-color: #1b1f2b !important;
-  }
-
-  td, th {
-    vertical-align: middle !important;
-  }
-</style>
-
 <div class="container mt-5 mb-5">
   {% if perms.badminton.change_team %}
     <div class="card shadow-lg bg-dark text-white border-info">
-      <div class="card-header bg-info text-white text-center">
+      <div class="card-header bg-info text-white">
         <h4 class="mb-0">Edit Groups & Teams — {{ tournament.name }}</h4>
       </div>
 
@@ -55,7 +16,7 @@
           <!-- Add Team Button -->
           <div class="d-flex justify-content-end mb-3">
             <a href="{% url 'add_team' tournament.id %}" class="btn btn-outline-light">
-              ➕ Add New Team
+              Add New Team
             </a>
           </div>
 
@@ -73,7 +34,7 @@
             {% endif %}
 
             <div class="table-responsive">
-              <table class="table table-bordered table-striped align-middle text-white">
+              <table class="table table-bordered table-striped table-black align-middle">
                 <thead class="table-dark text-center">
                   <tr>
                     <th>Team Name</th>
@@ -87,19 +48,18 @@
                         {{ hidden_field }}
                       {% endfor %}
                       <td>
-  <input type="text"
-         name="{{ form.name.html_name }}"
-         value="{{ form.name.value|default_if_none:'' }}"
-         class="modern-input"
-         id="{{ form.name.id_for_label }}"
-         placeholder="Enter team name">
-  {% if form.name.errors %}
-    <div class="text-danger small mt-1">
-      {{ form.name.errors.0 }}
-    </div>
-  {% endif %}
-</td>
-
+                        <input type="text"
+                               name="{{ form.name.html_name }}"
+                               value="{{ form.name.value|default_if_none:'' }}"
+                               class="modern-input"
+                               id="{{ form.name.id_for_label }}"
+                               placeholder="Enter team name">
+                        {% if form.name.errors %}
+                          <div class="text-danger small mt-1">
+                            {{ form.name.errors.0 }}
+                          </div>
+                        {% endif %}
+                      </td>
                       <td class="text-center">
                         {{ form.DELETE }}
                       </td>
@@ -113,10 +73,10 @@
           <!-- Save/Cancel Buttons -->
           <div class="mt-4 d-flex justify-content-center gap-3">
             <button type="submit" class="btn btn-success">
-              💾 Save All Changes
+              Save All Changes
             </button>
             <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-secondary">
-              ↩️ Cancel
+              Cancel
             </a>
           </div>
         </form>

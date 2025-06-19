@@ -1,239 +1,134 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Add Match — {{ tournament.name }}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container mt-5 mb-5">
   {% if perms.badminton.add_match %}
-    <div class="glass-card p-4 rounded-5 shadow-lg text-white">
-
-      <!-- Title -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 class="fw-bold display-6">Add Match</h2>
-          <p class="lead">{{ tournament.name }} | {{ tournament.place }} — {{ tournament.date }}</p>
-        </div>
+    <div class="card shadow-lg glass-card border-0 text-white rounded-4">
+      <div class="card-header bg-success bg-gradient text-white text-start rounded-top-4">
+        <h3 class="mb-0">
+          <i class=""></i>Add Match
+        </h3>
+        <p class="mb-0 small">{{ tournament.name }} | {{ tournament.place }} — {{ tournament.date }}</p>
       </div>
 
-      <!-- Form -->
-      <form method="post" id="matchForm" novalidate>
-        {% csrf_token %}
+      <div class="card-body">
+        <form method="post" id="matchForm" novalidate>
+          {% csrf_token %}
 
-        <!-- Group -->
-        <div class="form-floating mb-4">
-          {{ form.group }}
-          <label for="{{ form.group.id_for_label }}">Select Group</label>
-        </div>
-
-        <!-- Court Number -->
-        <div class="form-floating mb-4">
-          {{ form.court_number }}
-          <label for="{{ form.court_number.id_for_label }}">Court Number</label>
-        </div>
-
-        <!-- Teams -->
-        <div class="mb-4">
-          <label class="section-label">Teams</label>
-          <div class="row g-3">
-            <div class="col-12 col-md-6 form-floating">
-              {{ form.team1 }}
-              <label for="{{ form.team1.id_for_label }}">Team 1</label>
-            </div>
-            <div class="col-12 col-md-6 form-floating">
-              {{ form.team2 }}
-              <label for="{{ form.team2.id_for_label }}">Team 2</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Set Scores Section -->
-        <div class="mt-5">
-          <h5 class="text-center fw-bold mb-4">🎯 Set Scores</h5>
-          <div class="row text-center fw-bold mb-2">
-            <div class="col-2">Set</div>
-            <div class="col-5" id="team1Name">Team 1</div>
-            <div class="col-5" id="team2Name">Team 2</div>
+          <!-- Group -->
+          <div class="mb-3">
+            {{ form.group.label_tag }}
+            {{ form.group|add_class:"form-select bg-dark text-white border-secondary"|attr:"id:id_group" }}
           </div>
 
-          {% for i in "123"|make_list %}
-            <div class="row align-items-center mb-3 glass-subcard py-3 rounded-3">
-              <div class="col-2 text-center"><strong>{{ i }}</strong></div>
-              <div class="col-5">
-                {% if i == "1" %}{{ form.set1_team1 }}
-                {% elif i == "2" %}{{ form.set2_team1 }}
-                {% elif i == "3" %}{{ form.set3_team1 }}
-                {% endif %}
-              </div>
-              <div class="col-5">
-                {% if i == "1" %}{{ form.set1_team2 }}
-                {% elif i == "2" %}{{ form.set2_team2 }}
-                {% elif i == "3" %}{{ form.set3_team2 }}
-                {% endif %}
-              </div>
+          <!-- Court Number -->
+          <div class="mb-3">
+            {{ form.court_number.label_tag }}
+            {{ form.court_number|add_class:"form-control bg-dark text-white border-secondary" }}
+          </div>
+
+          <!-- Team Selection -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              {{ form.team1.label_tag }}
+              {{ form.team1|add_class:"form-select bg-dark text-white border-secondary"|attr:"id:id_team1" }}
             </div>
-          {% endfor %}
-        </div>
+            <div class="col-md-6">
+              {{ form.team2.label_tag }}
+              {{ form.team2|add_class:"form-select bg-dark text-white border-secondary"|attr:"id:id_team2" }}
+            </div>
+          </div>
 
-        <!-- Submit -->
-        <div class="d-grid mt-4">
-          <button type="submit" class="btn btn-glass btn-lg rounded-pill fw-bold">✅ Save Match</button>
-        </div>
-      </form>
+          <!-- Set Scores -->
+          <div class="mt-5">
+            <h5 class="text-center fw-bold mb-4">Set Scores</h5>
+            <div class="row text-center fw-bold mb-2">
+              <div class="col-2">Set</div>
+              <div class="col-5" id="team1Name">Team 1</div>
+              <div class="col-5" id="team2Name">Team 2</div>
+            </div>
 
-      <!-- Back Link -->
-      <div class="text-center mt-4">
-        <a href="{% url 'tournament_detail' tournament.id %}" class="text-white-50 text-decoration-none">
-          ← Back to Tournament
-        </a>
+            {% for i in "123"|make_list %}
+              <div class="row align-items-center mb-3 glass-subcard py-3 rounded-3">
+                <div class="col-2 text-center"><strong>{{ i }}</strong></div>
+                <div class="col-5">
+                  {% if i == "1" %}{{ form.set1_team1|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "2" %}{{ form.set2_team1|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "3" %}{{ form.set3_team1|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% endif %}
+                </div>
+                <div class="col-5">
+                  {% if i == "1" %}{{ form.set1_team2|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "2" %}{{ form.set2_team2|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "3" %}{{ form.set3_team2|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Submit -->
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success btn-glow rounded-pill">
+              <i class="bi bi-check-circle me-2"></i>Save Match
+            </button>
+          </div>
+        </form>
+
+        <!-- Back Link -->
+        <div class="text-center mt-4">
+          <a href="{% url 'tournament_detail' tournament.id %}" class="text-white-50 text-decoration-none">
+            <i class="bi bi-arrow-left-circle me-1"></i>Back to Tournament
+          </a>
+        </div>
       </div>
     </div>
-
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      $('#id_group').change(function () {
-        $.get("{% url 'ajax_load_teams' %}", { group_id: $(this).val() }, function (data) {
-          const t1 = $('#id_team1').empty().append('<option value="">---------</option>');
-          const t2 = $('#id_team2').empty().append('<option value="">---------</option>');
-          data.forEach(team => {
-            t1.append(`<option value="${team.id}">${team.name}</option>`);
-            t2.append(`<option value="${team.id}">${team.name}</option>`);
-          });
-          $('#team1Name').text("Team 1");
-          $('#team2Name').text("Team 2");
-        });
-      });
-
-      $('#id_team1, #id_team2').change(function () {
-        const t1 = $('#id_team1 option:selected');
-        const t2 = $('#id_team2 option:selected');
-        $('#team1Name').text(t1.val() ? t1.text() : "Team 1");
-        $('#team2Name').text(t2.val() ? t2.text() : "Team 2");
-
-        if (t1.val() && t2.val() && t1.val() === t2.val()) {
-          alert("Team 1 and Team 2 cannot be the same.");
-          $('#id_team1, #id_team2').val("");
-          $('#team1Name').text("Team 1");
-          $('#team2Name').text("Team 2");
-        }
-      });
-
-      $(document).ready(function () {
-        const t1 = $('#id_team1 option:selected');
-        const t2 = $('#id_team2 option:selected');
-        $('#team1Name').text(t1.val() ? t1.text() : "Team 1");
-        $('#team2Name').text(t2.val() ? t2.text() : "Team 2");
-      });
-    </script>
-
-    <!-- Styling -->
-    <style>
-      label {
-        background: transparent !important;
-        color: #e0e0e0;
-        font-weight: 500;
-        font-size: 0.95rem;
-        margin-bottom: 0.4rem;
-        letter-spacing: 0.3px;
-        text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
-      }
-
-      .section-label {
-        display: block;
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.6rem;
-        color: #f1f1f1;
-        text-shadow: 0 0 2px rgba(255, 255, 255, 0.15);
-      }
-
-      .glass-card {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-      }
-
-      .glass-subcard {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-      }
-
-      .form-floating > label {
-        color: #ccc;
-        background: transparent;
-      }
-
-      select,
-      input {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        color: #fff !important;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 0.375rem;
-        padding: 0.75rem 1rem;
-      }
-
-      select:focus,
-      input:focus {
-        box-shadow: 0 0 10px rgba(13, 110, 253, 0.4);
-        background-color: rgba(255, 255, 255, 0.2) !important;
-        outline: none;
-      }
-
-      select option {
-        background-color: #1a1a1a;
-        color: white;
-      }
-
-      select {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414 5.293 8.707a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1rem;
-        padding-right: 2.5rem;
-      }
-
-      .btn-glass {
-        background: linear-gradient(to right, #0d6efd, #6610f2);
-        color: white;
-        border: none;
-        transition: all 0.3s ease;
-      }
-
-      .btn-glass:hover {
-        background: linear-gradient(to right, #6610f2, #0d6efd);
-        transform: scale(1.02);
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-      }
-
-      @media (max-width: 576px) {
-        .display-6 {
-          font-size: 1.7rem;
-        }
-
-        .lead {
-          font-size: 1rem;
-        }
-
-        .btn-glass {
-          font-size: 1rem;
-        }
-
-        select,
-        input {
-          font-size: 0.95rem;
-        }
-      }
-    </style>
   {% else %}
     <div class="alert alert-danger text-center mt-4">
       <strong>Access Denied:</strong> You do not have permission to add matches.
     </div>
   {% endif %}
 </div>
+
+<!-- Dynamic Team AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $('#id_group').change(function () {
+    $.get("{% url 'ajax_load_teams' %}", { group_id: $(this).val() }, function (data) {
+      const t1 = $('#id_team1').empty().append('<option value="">---------</option>');
+      const t2 = $('#id_team2').empty().append('<option value="">---------</option>');
+      data.forEach(team => {
+        t1.append(`<option value="${team.id}">${team.name}</option>`);
+        t2.append(`<option value="${team.id}">${team.name}</option>`);
+      });
+      $('#team1Name').text("Team 1");
+      $('#team2Name').text("Team 2");
+    });
+  });
+
+  $('#id_team1, #id_team2').change(function () {
+    const t1 = $('#id_team1 option:selected');
+    const t2 = $('#id_team2 option:selected');
+    $('#team1Name').text(t1.val() ? t1.text() : "Team 1");
+    $('#team2Name').text(t2.val() ? t2.text() : "Team 2");
+
+    if (t1.val() && t2.val() && t1.val() === t2.val()) {
+      alert("Team 1 and Team 2 cannot be the same.");
+      $('#id_team1, #id_team2').val("");
+      $('#team1Name').text("Team 1");
+      $('#team2Name').text("Team 2");
+    }
+  });
+
+  $(document).ready(function () {
+    const t1 = $('#id_team1 option:selected');
+    const t2 = $('#id_team2 option:selected');
+    $('#team1Name').text(t1.val() ? t1.text() : "Team 1");
+    $('#team2Name').text(t2.val() ? t2.text() : "Team 2");
+  });
+</script>
 {% endblock %}

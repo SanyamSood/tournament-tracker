@@ -2,100 +2,102 @@
 {% load widget_tweaks %}
 {% load static %}
 
-{% block title %}Edit Match - {{ tournament.name }}{% endblock %}
+{% block title %}Edit Match — {{ tournament.name }}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container mt-5 mb-5">
   {% if perms.badminton.change_match %}
-    <div class="glass-card p-4 rounded-5 shadow-lg text-white">
+    <div class="card shadow-lg glass-card border-0 text-white rounded-4">
 
       <!-- Header with Delete Option -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="card-header bg-warning bg-gradient text-white rounded-top-4 d-flex justify-content-between align-items-center">
         <div>
-          <h2 class="fw-bold display-6">Edit Match</h2>
-          <p class="lead">{{ tournament.name }} | {{ tournament.place }} — {{ tournament.date }}</p>
+          <h3 class="mb-0">
+            <i class=""></i>Edit Match
+          </h3>
+          <p class="mb-0 small">{{ tournament.name }} | {{ tournament.place }} — {{ tournament.date }}</p>
         </div>
         {% if perms.badminton.delete_match %}
-          <a href="{% url 'delete_match' tournament.id match.id %}" class="btn btn-danger rounded-pill">
-            🗑️ Delete Match
+          <a href="{% url 'delete_match' tournament.id match.id %}" class="btn btn-danger rounded-pill btn-delete-glow">
+            <i class="bi bi-trash me-1"></i>Delete Match
           </a>
         {% endif %}
       </div>
 
-      <!-- Form -->
-      <form method="post" id="matchForm">
-        {% csrf_token %}
+      <div class="card-body">
+        <form method="post" id="matchForm" novalidate>
+          {% csrf_token %}
 
-        <!-- Group -->
-        <div class="form-floating mb-4">
-          {{ form.group|add_class:"form-control bg-transparent text-white" }}
-          <label for="{{ form.group.id_for_label }}">Select Group</label>
-        </div>
-
-        <!-- Court Number -->
-        <div class="form-floating mb-4">
-          {{ form.court_number|add_class:"form-control bg-transparent text-white" }}
-          <label for="{{ form.court_number.id_for_label }}">Court Number</label>
-        </div>
-
-        <!-- Teams -->
-        <div class="mb-4">
-          <label class="fw-bold mb-2">Teams</label>
-          <div class="row g-3">
-            <div class="col-12 col-md-6 form-floating">
-              {{ form.team1|add_class:"form-control bg-transparent text-white" }}
-              <label for="{{ form.team1.id_for_label }}">Team 1</label>
-            </div>
-            <div class="col-12 col-md-6 form-floating">
-              {{ form.team2|add_class:"form-control bg-transparent text-white" }}
-              <label for="{{ form.team2.id_for_label }}">Team 2</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Set Scores -->
-        <div class="mt-5">
-          <h5 class="text-center fw-bold mb-4">🎯 Set Scores</h5>
-
-          <div class="row text-center fw-bold mb-2">
-            <div class="col-2">Set</div>
-            <div class="col-5" id="team1Name">Team 1</div>
-            <div class="col-5" id="team2Name">Team 2</div>
+          <!-- Group -->
+          <div class="mb-3">
+            {{ form.group.label_tag }}
+            {{ form.group|add_class:"form-select bg-dark text-white border-secondary"|attr:"id:id_group" }}
           </div>
 
-          {% for i in "123"|make_list %}
-          <div class="row align-items-center mb-3 glass-subcard py-3 rounded-3">
-            <div class="col-2 text-center"><strong>{{ i }}</strong></div>
-            <div class="col-5">
-              {% if i == "1" %}{{ form.set1_team1|add_class:"form-control bg-transparent text-white" }}
-              {% elif i == "2" %}{{ form.set2_team1|add_class:"form-control bg-transparent text-white" }}
-              {% elif i == "3" %}{{ form.set3_team1|add_class:"form-control bg-transparent text-white" }}
-              {% endif %}
+          <!-- Court Number -->
+          <div class="mb-3">
+            {{ form.court_number.label_tag }}
+            {{ form.court_number|add_class:"form-control bg-dark text-white border-secondary" }}
+          </div>
+
+          <!-- Teams -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              {{ form.team1.label_tag }}
+              {{ form.team1|add_class:"form-select bg-dark text-white border-secondary"|attr:"id:id_team1" }}
             </div>
-            <div class="col-5">
-              {% if i == "1" %}{{ form.set1_team2|add_class:"form-control bg-transparent text-white" }}
-              {% elif i == "2" %}{{ form.set2_team2|add_class:"form-control bg-transparent text-white" }}
-              {% elif i == "3" %}{{ form.set3_team2|add_class:"form-control bg-transparent text-white" }}
-              {% endif %}
+            <div class="col-md-6">
+              {{ form.team2.label_tag }}
+              {{ form.team2|add_class:"form-select bg-dark text-white border-secondary"|attr:"id:id_team2" }}
             </div>
           </div>
-          {% endfor %}
-        </div>
 
-        <!-- Submit -->
-        <div class="d-grid mt-4">
-          <button type="submit" class="btn btn-glass btn-lg rounded-pill fw-bold">💾 Save Changes</button>
-        </div>
-      </form>
+          <!-- Set Scores -->
+          <div class="mt-5">
+            <h5 class="text-center fw-bold mb-4">Set Scores</h5>
+            <div class="row text-center fw-bold mb-2">
+              <div class="col-2">Set</div>
+              <div class="col-5" id="team1Name">Team 1</div>
+              <div class="col-5" id="team2Name">Team 2</div>
+            </div>
 
-      <!-- Back Link -->
-      <div class="text-center mt-4">
-        <a href="{% url 'view_matches' tournament.id %}" class="text-white-50 text-decoration-none">
-          ← Back to Matches
-        </a>
+            {% for i in "123"|make_list %}
+              <div class="row align-items-center mb-3 glass-subcard py-3 rounded-3">
+                <div class="col-2 text-center"><strong>{{ i }}</strong></div>
+                <div class="col-5">
+                  {% if i == "1" %}{{ form.set1_team1|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "2" %}{{ form.set2_team1|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "3" %}{{ form.set3_team1|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% endif %}
+                </div>
+                <div class="col-5">
+                  {% if i == "1" %}{{ form.set1_team2|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "2" %}{{ form.set2_team2|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% elif i == "3" %}{{ form.set3_team2|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Submit -->
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-warning btn-glow rounded-pill">
+              <i class="bi bi-check-circle me-2"></i>Save Changes
+            </button>
+          </div>
+        </form>
+
+        <!-- Back Link -->
+        <div class="text-center mt-4">
+          <a href="{% url 'view_matches' tournament.id %}" class="text-white-50 text-decoration-none">
+            <i class="bi bi-arrow-left-circle me-1"></i>Back to Matches
+          </a>
+        </div>
       </div>
     </div>
 
+    <!-- Script for live label updates -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       function updateTeamLabels() {
@@ -108,67 +110,6 @@
         $('#id_team1, #id_team2').change(updateTeamLabels);
       });
     </script>
-
-    <style>
-      label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 0.4rem;
-        color: #e0e0e0;
-        font-size: 0.95rem;
-        letter-spacing: 0.3px;
-        text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
-      }
-
-      .glass-card {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-      }
-
-      .glass-subcard {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-      }
-
-      select,
-      input {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        color: #fff !important;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 0.375rem;
-        padding: 0.75rem 1rem;
-      }
-
-      select:focus,
-      input:focus {
-        box-shadow: 0 0 10px rgba(13, 110, 253, 0.4);
-        background-color: rgba(255, 255, 255, 0.2) !important;
-        outline: none;
-      }
-
-      select option {
-        background-color: #1a1a1a;
-        color: white;
-      }
-
-      .btn-glass {
-        background: linear-gradient(to right, #ffc107, #fd7e14);
-        color: white;
-        border: none;
-        transition: all 0.3s ease;
-      }
-
-      .btn-glass:hover {
-        background: linear-gradient(to right, #fd7e14, #ffc107);
-        transform: scale(1.02);
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-      }
-    </style>
 
   {% else %}
     <div class="alert alert-danger text-center mt-4">

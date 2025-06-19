@@ -5,54 +5,13 @@
 {% block title %}Create Tournament{% endblock %}
 
 {% block content %}
-<style>
-  .glass-button {
-    background: rgba(40, 167, 69, 0.2);  /* semi-transparent green */
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    padding: 12px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    border-radius: 50px;
-    width: 100%;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .glass-button:hover {
-    background: rgba(72, 207, 122, 0.4);  /* brighter green */
-    box-shadow: 0 0 20px rgba(72, 207, 122, 0.6), 0 0 40px rgba(72, 207, 122, 0.2);
-    transform: scale(1.03);
-  }
-
-  .glass-button:active {
-    transform: scale(0.98);
-  }
-  label {
-    color: #ffffff;
-    font-weight: 500;
-  }
-  .glass-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  select.form-select {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-  select.form-select option {
-    background-color: #2c3e50;
-    color: white;
-  }
-</style>
-
 <div class="container mt-5 mb-5">
   {% if perms.badminton.add_tournament %}
-    <div class="card shadow-lg bg-dark text-white border-0 rounded-4">
-      <div class="card-header bg-primary text-white text-center rounded-top-4">
-        <h3 class="mb-0">🎯 Create New Tournament</h3>
+    <div class="card shadow-lg glass-card border-0 text-white rounded-4">
+      <div class="card-header bg-primary bg-gradient text-white text-start rounded-top-4">
+        <h3 class="mb-0">
+          <i class=""></i>Create New Tournament
+        </h3>
       </div>
 
       <div class="card-body">
@@ -62,45 +21,47 @@
           <!-- Tournament Name -->
           <div class="mb-3">
             {{ form.name.label_tag }}
-            {{ form.name|add_class:"form-control glass-input bg-transparent text-white"|attr:"placeholder:Tournament Name" }}
+            {{ form.name|add_class:"form-control bg-dark text-white border-secondary"|attr:"placeholder:Tournament Name" }}
           </div>
 
           <!-- Place -->
           <div class="mb-3">
             {{ form.place.label_tag }}
-            {{ form.place|add_class:"form-control glass-input bg-transparent text-white"|attr:"placeholder:Place" }}
+            {{ form.place|add_class:"form-control bg-dark text-white border-secondary"|attr:"placeholder:Place" }}
           </div>
 
           <!-- Date -->
           <div class="mb-3">
             {{ form.date.label_tag }}
-            {{ form.date|add_class:"form-control glass-input bg-transparent text-white"|attr:"placeholder:YYYY-MM-DD" }}
+            {{ form.date|add_class:"form-control bg-dark text-white border-secondary"|attr:"placeholder:YYYY-MM-DD" }}
           </div>
 
           <!-- Number of Groups -->
           <div class="mb-3">
             {{ form.num_groups.label_tag }}
-            {{ form.num_groups|add_class:"form-select bg-transparent text-white" }}
+            {{ form.num_groups|add_class:"form-select bg-dark text-white border-secondary" }}
           </div>
 
           <!-- Dynamic Group Inputs -->
-        {% for letter in "ABCDEFGHIJ" %}
-  {% with "group_"|add:letter|lower|add:"_teams" as field_name %}
-    {% with form|get_item:field_name as field %}
-      <div class="mb-3 group-box" id="group{{ letter }}Box" style="display: none;">
-        {{ field.label_tag }}
-        {{ field|add_class:"form-control text-white bg-dark border-secondary" }}
-        {% if field.help_text %}
-          <small class="form-text text-white">{{ field.help_text }}</small>
-        {% endif %}
-      </div>
-    {% endwith %}
-  {% endwith %}
-{% endfor %}
+          {% for letter in "ABCDEFGHIJ" %}
+            {% with "group_"|add:letter|lower|add:"_teams" as field_name %}
+              {% with form|get_item:field_name as field %}
+                <div class="mb-3 group-box" id="group{{ letter }}Box" style="display: none;">
+                  {{ field.label_tag }}
+                  {{ field|add_class:"form-control bg-dark text-white border-secondary" }}
+                  {% if field.help_text %}
+                    <small class="form-text text-white">{{ field.help_text }}</small>
+                  {% endif %}
+                </div>
+              {% endwith %}
+            {% endwith %}
+          {% endfor %}
 
-          <!-- Submit -->
+          <!-- Submit Button -->
           <div class="d-grid">
-            <button type="submit" class="glass-button">Create Tournament</button>
+            <button type="submit" class="btn btn-success btn-glow rounded-pill">
+              <i class="bi bi-plus-circle me-2"></i>Create Tournament
+            </button>
           </div>
         </form>
       </div>
@@ -112,7 +73,7 @@
   {% endif %}
 </div>
 
-<!-- Group Logic -->
+<!-- Group Show/Hide Logic -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const select = document.querySelector('select[name="num_groups"]');
@@ -120,7 +81,7 @@
 
     function toggleGroupInputs(num) {
       for (let i = 0; i < maxGroups; i++) {
-        const letter = String.fromCharCode(65 + i);  // A-J
+        const letter = String.fromCharCode(65 + i); // A-J
         const box = document.getElementById(`group${letter}Box`);
         if (box) {
           box.style.display = (i < num) ? 'block' : 'none';
