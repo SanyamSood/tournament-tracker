@@ -11,37 +11,56 @@
         <h2 class="text-white">{{ tournament.name }}</h2>
         <div class="d-flex gap-2 mt-2">
             {% if perms.badminton.change_tournament %}
-                <a href="{% url 'edit_tournament' tournament.id %}" class="btn btn-warning btn-glow rounded-pill">Edit</a>
+                <a href="{% url 'edit_tournament' tournament.id %}" class="btn btn-warning btn-glow rounded-pill">
+                    <i class="bi bi-pencil-square me-1"></i>Edit
+                </a>
             {% endif %}
             {% if perms.badminton.delete_tournament %}
-                <a href="{% url 'delete_tournament' tournament.id %}" class="btn btn-danger btn-glow rounded-pill">Delete</a>
+                <a href="{% url 'delete_tournament' tournament.id %}" class="btn btn-danger btn-glow rounded-pill">
+                    <i class="bi bi-trash3-fill me-1"></i>Delete
+                </a>
             {% endif %}
         </div>
     </div>
 
     <!-- Tournament Info -->
     <div class="glass-card p-4 rounded-4 mb-4 text-white shadow-sm">
-        <p class="mb-2"><i class="bi bi-geo-alt-fill me-2"></i><strong>Place:</strong> {{ tournament.place }}</p>
-        <p class="mb-0"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> {{ tournament.date|date:"F j, Y" }}</p>
+        <p class="mb-2">
+            <i class="bi bi-geo-alt-fill me-2"></i>
+            <strong>Place:</strong> {{ tournament.place }}
+        </p>
+        <p class="mb-0">
+            <i class="bi bi-calendar-event me-2"></i>
+            <strong>Date:</strong> {{ tournament.date|date:"F j, Y" }}
+        </p>
     </div>
 
     <!-- Action Buttons -->
     <div class="d-flex flex-wrap gap-3 mb-4">
-        <a href="{% url 'view_matches' tournament.id %}" class="btn btn-primary btn-glow rounded-pill px-4">View Matches</a>
+        <a href="{% url 'view_matches' tournament.id %}" class="btn btn-primary btn-glow rounded-pill px-4">
+            <i class="bi bi-eye-fill me-1"></i>View Matches
+        </a>
+
         {% if perms.badminton.add_match %}
-            <a href="{% url 'add_match' tournament.id %}" class="btn btn-success btn-glow rounded-pill px-4">+ Add Match</a>
+            <a href="{% url 'add_match' tournament.id %}" class="btn btn-success btn-glow rounded-pill px-4">
+                <i class="bi bi-plus-circle-fill me-1"></i>Add Match
+            </a>
         {% endif %}
         {% if perms.badminton.add_team %}
-            <a href="{% url 'add_team' tournament.id %}" class="btn btn-info btn-glow rounded-pill px-4">+ Add Team</a>
+            <a href="{% url 'add_team' tournament.id %}" class="btn btn-info btn-glow rounded-pill px-4">
+                <i class="bi bi-person-plus-fill me-1"></i>Add Team
+            </a>
         {% endif %}
         {% if perms.badminton.change_tournament %}
-            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-secondary btn-glow rounded-pill px-4">Edit Groups/Teams</a>
+            <a href="{% url 'edit_groups_teams' tournament.id %}" class="btn btn-secondary btn-glow rounded-pill px-4">
+                <i class="bi bi-people-fill me-1"></i>Edit Groups/Teams
+            </a>
         {% endif %}
     </div>
 
     <!-- Points Table Header & Search -->
     <div class="d-flex justify-content-between align-items-center mb-3 mt-5 flex-wrap">
-        <h4 class="text-white mb-2">Points Table</h4>
+        <h4 class="text-white mb-2"><i class="bi bi-table me-2"></i>Points Table</h4>
         <input type="text" id="teamSearch" class="form-control w-auto" placeholder="Search team..." oninput="filterGroups()">
     </div>
 
@@ -53,7 +72,8 @@
                 onclick="toggleGroup('{{ group.group }}')"
                 style="cursor: pointer;">
                 <h5 class="text-white mb-0">
-                    <span id="arrow-{{ group.group }}" class="me-2">▼</span> Group {{ group.group }}
+                    <span id="arrow-{{ group.group }}" class="me-2">▼</span>
+                    <i class="bi bi-diagram-3-fill me-1"></i>Group {{ group.group }}
                 </h5>
             </div>
 
@@ -90,7 +110,11 @@
                                     <td>{{ team.point_diff }}</td>
                                 </tr>
                             {% empty %}
-                                <tr><td colspan="10">No data yet.</td></tr>
+                                <tr>
+                                    <td colspan="10" class="text-muted">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
+                                    </td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -117,9 +141,7 @@ function filterGroups() {
     const groupBlocks = document.querySelectorAll('.group-block');
 
     if (!query) {
-        groupBlocks.forEach(block => {
-            block.style.display = 'block';
-        });
+        groupBlocks.forEach(block => block.style.display = 'block');
         return;
     }
 
@@ -135,14 +157,4 @@ function filterGroups() {
     });
 }
 </script>
-
-<!-- Styles -->
-<style>
-.group-header:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    transition: background 0.3s ease;
-}
-</style>
-
 {% endblock %}

@@ -6,39 +6,51 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-white">🏸 Tournaments</h1>
-        {% if perms.badminton.add_tournament %}
-            <a href="{% url 'create_badminton_tournament' %}" class="btn btn-primary rounded-pill shadow fw-bold px-4 py-2">+ Create Tournament</a>
-        {% endif %}
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-white">
+      <i class="bi bi-trophy-fill me-2"></i>Tournaments
+    </h1>
+    {% if perms.badminton.add_tournament %}
+      <a href="{% url 'create_badminton_tournament' %}" class="btn btn-primary btn-glow rounded-pill shadow fw-bold px-4 py-2">
+  <i class="bi bi-plus-circle me-1"></i>Create Tournament
+</a>
 
-    {% if tournaments %}
-        <div class="row g-4">
-            {% for tournament in tournaments %}
-                <div class="col-md-6 col-lg-4">
-                    <a href="{% url 'tournament_detail' tournament.id %}" class="text-decoration-none">
-                        <div class="glass-card card-hover p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between text-white">
-                            <div>
-                                <h4 class="mb-2">{{ tournament.name }}</h4>
-                                <p class="mb-1"><i class="bi bi-geo-alt-fill"></i> {{ tournament.place }}</p>
-                                <p class="mb-3"><i class="bi bi-calendar-event"></i> {{ tournament.date|date:"F j, Y" }}</p>
-                            </div>
-                            <div class="d-flex justify-content-end gap-2 mt-3">
-                                {% if perms.badminton.change_tournament %}
-                                    <a href="{% url 'edit_tournament' tournament.id %}" class="btn btn-warning btn-glow btn-sm rounded-pill fw-semibold">Edit</a>
-                                {% endif %}
-                                {% if perms.badminton.delete_tournament %}
-                                    <a href="{% url 'delete_tournament' tournament.id %}" class="btn btn-danger btn-glow btn-sm rounded-pill fw-semibold">Delete</a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-info text-center mt-5">No tournaments found. {% if perms.badminton.add_tournament %}Create one now!{% endif %}</div>
     {% endif %}
+  </div>
+
+  {% if tournaments %}
+    <div class="row g-4">
+      {% for tournament in tournaments %}
+        <div class="col-md-6 col-lg-4">
+          <a href="{% url 'tournament_detail' tournament.id %}" class="text-decoration-none">
+            <div class="glass-card card-hover p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between text-white">
+              <div>
+                <h4 class="mb-2">{{ tournament.name }}</h4>
+                <p class="mb-1"><i class="bi bi-geo-alt-fill me-1"></i>{{ tournament.place }}</p>
+                <p class="mb-3"><i class="bi bi-calendar-event me-1"></i>{{ tournament.date|date:"F j, Y" }}</p>
+              </div>
+              <div class="d-flex justify-content-end gap-2 mt-3">
+                {% if perms.badminton.change_tournament %}
+                  <a href="{% url 'edit_tournament' tournament.id %}" class="btn btn-warning btn-glow btn-sm rounded-pill fw-semibold">
+                    <i class="bi bi-pencil-square me-1"></i>Edit
+                  </a>
+                {% endif %}
+                {% if perms.badminton.delete_tournament %}
+                  <a href="{% url 'delete_tournament' tournament.id %}" class="btn btn-danger btn-glow btn-sm rounded-pill fw-semibold">
+                    <i class="bi bi-trash3-fill me-1"></i>Delete
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center mt-5">
+      <i class="bi bi-info-circle-fill me-1"></i>No tournaments found.
+      {% if perms.badminton.add_tournament %}Create one now!{% endif %}
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

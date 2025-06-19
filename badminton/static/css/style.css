@@ -1,0 +1,171 @@
+/* === BUTTON STYLES === */
+.btn-warning {
+  background-color: #facc15 !important;
+  color: #000 !important;
+  border: none;
+}
+
+.btn-danger {
+  background-color: #ef4444 !important;
+  color: #fff !important;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+  border: none;
+}
+
+.btn-success {
+  background-color: #22c55e !important;
+  color: #fff !important;
+  border: none;
+}
+
+.btn-info {
+  background-color: #0ea5e9 !important;
+  color: #fff !important;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #94a3b8 !important;
+  color: #000 !important;
+  border: none;
+}
+
+/* Glow effect (reusable with any button) */
+.btn-glow {
+  transition: all 0.2s ease-in-out;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* Optional: Rounded pill buttons */
+.btn-rounded {
+  border-radius: 50rem !important;
+}
+
+/* Optional: Compact small buttons */
+.btn-sm {
+  font-size: 0.95rem;
+  padding: 0.5rem 1.2rem;
+}
+
+/* Optional: Outline button variant */
+.btn-outline-glow {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-outline-glow:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+
+/* === GLOBAL BASE STYLES === */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+}
+
+nav.navbar {
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+footer {
+  color: #ddd;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+a,
+a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* === GLASS CARD === */
+.glass-card {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  color: #fff;
+  position: relative;
+  transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover scale effect */
+a.text-decoration-none:hover .glass-card,
+.card-hover:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+
+/* Group section hover (like Points Table headers) */
+.group-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+/* Prevent unwanted transform overrides */
+div:hover,
+section:hover,
+article:hover {
+  transform: none !important;
+}
+
+/* === RESPONSIVE FIXES === */
+@media (max-width: 576px) {
+  .glass-card {
+    padding: 1.2rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.45rem 1rem;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+.group-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
