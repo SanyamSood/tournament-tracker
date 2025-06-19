@@ -77,9 +77,9 @@
                 </h5>
             </div>
 
-            <!-- Table -->
+            <!-- Desktop Table View -->
             <div id="group-{{ group.group }}" class="group-table">
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-md-block">
                     <table class="table table-dark table-hover table-bordered text-center align-middle mb-0">
                         <thead class="table-light text-dark">
                             <tr>
@@ -119,10 +119,33 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Mobile Card View -->
+                <div class="d-md-none">
+                    {% for team in group.table %}
+                        <div class="bg-dark text-white rounded-3 p-3 mb-3 shadow-sm">
+                            <h6 class="fw-bold mb-2">{{ team.name }}</h6>
+                            <div class="row row-cols-2 g-1 small">
+                                <div class="col"><strong>Played:</strong> {{ team.played }}</div>
+                                <div class="col"><strong>Won:</strong> {{ team.won }}</div>
+                                <div class="col"><strong>Lost:</strong> {{ team.lost }}</div>
+                                <div class="col"><strong>Sets Won:</strong> {{ team.sets_won }}</div>
+                                <div class="col"><strong>Sets Lost:</strong> {{ team.sets_lost }}</div>
+                                <div class="col"><strong>Set Diff:</strong> {{ team.set_diff }}</div>
+                                <div class="col"><strong>Points Scored:</strong> {{ team.points_scored }}</div>
+                                <div class="col"><strong>Points Conceded:</strong> {{ team.points_conceded }}</div>
+                                <div class="col"><strong>Point Diff:</strong> {{ team.point_diff }}</div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-muted">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     {% endfor %}
-
 </div>
 
 <!-- Scripts -->
