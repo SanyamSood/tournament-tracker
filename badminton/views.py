@@ -117,9 +117,8 @@ def view_matches(request, tournament_id):
 
     # Add local time attributes to each match
     for match in matches:
-        match.local_time = match.created_at + timedelta(hours=5, minutes=30)
-        match.local_updated_time = match.updated_at + timedelta(hours=5, minutes=30)
-
+        match.local_time = match.created_at 
+        match.local_updated_time = match.updated_at
     return render(request, 'view_matches.html', {
         'tournament': tournament,
         'matches': matches,
