@@ -4,54 +4,14 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<style>
-  .glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: #fff;
-  }
-
-  .glass-card .form-control {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-  }
-
-  .glass-card .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .glass-card .form-label {
-    color: #fff;
-  }
-
-  .btn-glass {
-    background-color: rgba(0, 123, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #fff;
-  }
-
-  .btn-glass:hover {
-    background-color: rgba(0, 123, 255, 0.3);
-  }
-
-  .alert-glass {
-    background: rgba(255, 0, 0, 0.15);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-</style>
-
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-md-8 col-lg-5">
       <div class="glass-card p-4">
 
-        <h4 class="text-center mb-4">🔐 Login</h4>
+        <h4 class="text-center mb-4">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Login
+        </h4>
 
         {% if form.errors %}
           <div class="alert alert-glass text-center">
@@ -73,7 +33,9 @@
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-glass">🔓 Login</button>
+            <button type="submit" class="btn btn-glass">
+              <i class="bi bi-shield-lock me-2"></i>Login
+            </button>
           </div>
         </form>
 
