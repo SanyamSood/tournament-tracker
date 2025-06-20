@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ✅ SECURITY
 SECRET_KEY = 'django-insecure-6aresfgq9c=oglb0_8vq1y4jgom*&)oup2e&14$80_z6!!2fch'
-DEBUG = True  # ⚠️ Set to False in production
+DEBUG = False  # ⚠️ Set to False in production
 ALLOWED_HOSTS = ['tournament-tracker-dgus.onrender.com', '127.0.0.1']
 
 # ✅ Auth redirects
