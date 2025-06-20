@@ -243,3 +243,38 @@ select.form-select option {
     display: none;
   }
 }
+
+.table-responsive-no-scrollbar {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 480px; /* fits 4 columns approx */
+  margin: 0 auto;
+}
+
+.table-responsive-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.table-responsive-no-scrollbar table {
+  min-width: 1000px; /* enough for all columns */
+  table-layout: fixed; /* fixed layout for column widths */
+}
+
+/* Fix widths for first 4 columns */
+.table-responsive-no-scrollbar th:nth-child(-n+4),
+.table-responsive-no-scrollbar td:nth-child(-n+4) {
+  width: 120px;
+  white-space: nowrap;
+}
+
+/* On bigger screens, remove max-width restriction */
+@media (min-width: 768px) {
+  .table-responsive-no-scrollbar {
+    max-width: 100%;
+  }
+  .table-responsive-no-scrollbar table {
+    min-width: auto;
+    table-layout: auto;
+  }
+}
