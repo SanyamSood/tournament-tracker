@@ -72,14 +72,13 @@ class Match(models.Model):
             elif self.set3_team2 > self.set3_team1:
                 sets_team2 += 1
 
-    # Determine the winner or return None (TBD)
-        if sets_team1 ==2:
+        # Determine the winner or return None (TBD)
+        if sets_team1 == 2:
             return self.team1
-        elif sets_team2 ==2:
+        elif sets_team2 == 2:
             return self.team2
         else:
-            return None  # It's either a tie or incomplete match
-  
+            return None
 
     def save(self, *args, **kwargs):
         self.winner = self.get_winner()
@@ -96,7 +95,6 @@ class Match(models.Model):
         else:
             t2 += 1
 
-
         if self.set2_team1 is not None and self.set2_team2 is not None:
             if self.set2_team1 > self.set2_team2:
                 t1 += 1
@@ -111,9 +109,12 @@ class Match(models.Model):
 
         return f"{t1}-{t2}"
 
+    @property
+    def was_updated(self):
+        return self.updated_at and self.updated_at != self.created_at
+
     def __str__(self):
         return f"{self.team1.name} vs {self.team2.name} (Group {self.group.name})"
-
 
 
 class SetScore(models.Model):

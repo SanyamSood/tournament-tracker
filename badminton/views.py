@@ -191,18 +191,29 @@ def add_match(request, tournament_id):
 @login_required
 @user_passes_test(is_organiser_or_manager)
 def edit_match(request, tournament_id, match_id):
-    match = get_object_or_404(Match, id=match_id, group__tournament__id=tournament_id)
+    match = get_object_or_404(
+        Match, id=match_id, group__tournament__id=tournament_id
+    )
     tournament = get_object_or_404(Tournament, id=tournament_id)
 
     if request.method == 'POST':
         form = MatchForm(request.POST, instance=match, tournament=tournament)
         if form.is_valid():
-            form.save()
+            if form.has_changed():
+                form.save()
             return redirect('view_matches', tournament_id=tournament.id)
     else:
         form = MatchForm(instance=match, tournament=tournament)
 
-    return render(request, 'edit_match.html', {'form': form, 'match': match, 'tournament': tournament})
+    return render(
+        request,
+        'edit_match.html',
+        {
+            'form': form,
+            'match': match,
+            'tournament': tournament,
+        }
+    )
 
 @login_required
 @user_passes_test(is_organiser_or_manager)
