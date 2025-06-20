@@ -77,51 +77,97 @@
                 </h5>
             </div>
 
-            <!-- Responsive Table for All Devices -->
+            <!-- Group Content -->
             <div id="group-{{ group.group }}" class="group-table">
-                <div class="table-responsive">
-    <table class="table table-dark table-sm table-hover table-bordered text-center align-middle mb-0">
-        <thead class="table-light text-dark sticky-top">
-            <tr>
-                <th>Team</th>
-                <th>Played</th>
-                <th>Won</th>
-                <th>Lost</th>
-                <th class="d-none d-sm-table-cell">Sets Won</th>
-                <th class="d-none d-sm-table-cell">Sets Lost</th>
-                <th class="d-none d-sm-table-cell">Set Diff</th>
-                <th class="d-none d-md-table-cell">Points Scored</th>
-                <th class="d-none d-md-table-cell">Points Conceded</th>
-                <th class="d-none d-md-table-cell">Point Diff</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for team in group.table %}
-                <tr>
-                    <td class="team-name text-nowrap">{{ team.name }}</td>
-                    <td>{{ team.played }}</td>
-                    <td>{{ team.won }}</td>
-                    <td>{{ team.lost }}</td>
-                    <td class="d-none d-sm-table-cell">{{ team.sets_won }}</td>
-                    <td class="d-none d-sm-table-cell">{{ team.sets_lost }}</td>
-                    <td class="d-none d-sm-table-cell">{{ team.set_diff }}</td>
-                    <td class="d-none d-md-table-cell">{{ team.points_scored }}</td>
-                    <td class="d-none d-md-table-cell">{{ team.points_conceded }}</td>
-                    <td class="d-none d-md-table-cell">{{ team.point_diff }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="10" class="text-muted">
-                        <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+
+                <!-- Desktop Table View -->
+                <div class="table-responsive d-none d-md-block">
+                    <table class="table table-dark table-hover table-bordered text-center align-middle mb-0">
+                        <thead class="table-light text-dark">
+                            <tr>
+                                <th>Team</th>
+                                <th>Played</th>
+                                <th>Won</th>
+                                <th>Lost</th>
+                                <th>Sets Won</th>
+                                <th>Sets Lost</th>
+                                <th>Set Diff</th>
+                                <th>Points Scored</th>
+                                <th>Points Conceded</th>
+                                <th>Point Diff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in group.table %}
+                                <tr>
+                                    <td class="team-name">{{ team.name }}</td>
+                                    <td>{{ team.played }}</td>
+                                    <td>{{ team.won }}</td>
+                                    <td>{{ team.lost }}</td>
+                                    <td>{{ team.sets_won }}</td>
+                                    <td>{{ team.sets_lost }}</td>
+                                    <td>{{ team.set_diff }}</td>
+                                    <td>{{ team.points_scored }}</td>
+                                    <td>{{ team.points_conceded }}</td>
+                                    <td>{{ team.point_diff }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-muted">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div class="d-md-none">
+                    {% for team in group.table %}
+                        <div class="bg-dark text-white rounded-4 p-3 mb-4 shadow-sm border border-light-subtle">
+                            <h6 class="fw-bold fs-6 mb-3">
+                                <i class="bi bi-person-fill me-1"></i>{{ team.name }}
+                            </h6>
+
+                            <!-- Match Stats -->
+                            <div class="border-top pt-2 mb-2">
+                                <p class="text-info fw-semibold small mb-1">Match Stats</p>
+                                <div class="row row-cols-2 g-2 small">
+                                    <div class="col"><i class="bi bi-play-btn-fill me-1"></i><strong>Played:</strong> {{ team.played }}</div>
+                                    <div class="col"><i class="bi bi-trophy-fill me-1"></i><strong>Won:</strong> {{ team.won }}</div>
+                                    <div class="col"><i class="bi bi-x-circle-fill me-1"></i><strong>Lost:</strong> {{ team.lost }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Set Stats -->
+                            <div class="border-top pt-2 mb-2">
+                                <p class="text-info fw-semibold small mb-1">Set Stats</p>
+                                <div class="row row-cols-2 g-2 small">
+                                    <div class="col"><strong>Sets Won:</strong> {{ team.sets_won }}</div>
+                                    <div class="col"><strong>Sets Lost:</strong> {{ team.sets_lost }}</div>
+                                    <div class="col"><strong>Set Diff:</strong> {{ team.set_diff }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Points Stats -->
+                            <div class="border-top pt-2">
+                                <p class="text-info fw-semibold small mb-1">Points</p>
+                                <div class="row row-cols-2 g-2 small">
+                                    <div class="col"><strong>Scored:</strong> {{ team.points_scored }}</div>
+                                    <div class="col"><strong>Conceded:</strong> {{ team.points_conceded }}</div>
+                                    <div class="col"><strong>Diff:</strong> {{ team.point_diff }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-muted">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
+                        </div>
+                    {% endfor %}
+                </div>
 
             </div>
-
         </div>
     {% endfor %}
 </div>
