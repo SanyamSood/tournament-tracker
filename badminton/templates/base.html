@@ -19,28 +19,21 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
-<body>
+<body class="app-wrapper">
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
   <div class="container-fluid px-3 px-md-5">
-
-    <!-- Brand -->
     <a class="navbar-brand fw-bold" href="{% url 'tournament_list' %}">
       <i class="bi bi-trophy-fill me-2"></i>Badminton Tracker
     </a>
-
-    <!-- Toggler for mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Navbar content -->
     <div class="collapse navbar-collapse mt-2 mt-lg-0" id="navbarContent">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
-
         {% if user.is_authenticated %}
-        <!-- User dropdown -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,30 +51,26 @@
           </ul>
         </li>
         {% else %}
-        <!-- Login button -->
         <li class="nav-item">
           <a class="nav-link" href="{% url 'login' %}">
             <i class="bi bi-box-arrow-in-right me-1"></i>Login
           </a>
         </li>
         {% endif %}
-
       </ul>
     </div>
   </div>
 </nav>
 
 <!-- Content Area -->
-<div class="container">
-  <div class="glass-card">
-    {% block content %}
-    {% endblock %}
-  </div>
+<div class="container py-5">
+  {% block content %}
+  {% endblock %}
 </div>
 
 <!-- Footer -->
-<footer>
-  <p><i class="bi bi-code-slash me-1"></i>Built for Tournament Management with love</p>
+<footer class="text-center text-white mt-5 mb-3 small">
+  <i class="bi bi-code-slash me-1"></i>Built for Tournament Management with love
 </footer>
 
 <!-- Bootstrap JS -->
