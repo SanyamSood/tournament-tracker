@@ -117,13 +117,14 @@ def view_matches(request, tournament_id):
 
     # Add local time attributes to each match
     for match in matches:
-        match.local_time = match.created_at 
-        match.local_updated_time = match.updated_at
+        match.local_time = match.created_at
+        match.local_updated_time = match.updated_at if match.was_updated else None
+
     return render(request, 'view_matches.html', {
         'tournament': tournament,
         'matches': matches,
         'current_tournament': tournament,
-        'search_query': search_query,  # Pass it to template for form value
+        'search_query': search_query,
     })
 
 def load_teams(request):

@@ -1,8 +1,8 @@
 from django.db import models
-from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
 from .utils import update_points_table
-
+from django.db import models
+from django.utils.timezone import now
 
 class Tournament(models.Model):
     name = models.CharField(max_length=100)
@@ -12,7 +12,6 @@ class Tournament(models.Model):
     def __str__(self):
         return self.name
 
-
 class Group(models.Model):
     name = models.CharField(max_length=1)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='groups')
@@ -20,14 +19,12 @@ class Group(models.Model):
     def __str__(self):
         return f"Group {self.name} - {self.tournament.name}"
 
-
 class Team(models.Model):
     name = models.CharField(max_length=100)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='teams')
 
     def __str__(self):
         return self.name
-
 
 class Match(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -45,7 +42,7 @@ class Match(models.Model):
     winner = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_won')
 
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(null=True, blank=True)  # Manual updates only
 
     def get_winner(self):
         sets_team1 = 0
@@ -72,7 +69,6 @@ class Match(models.Model):
             elif self.set3_team2 > self.set3_team1:
                 sets_team2 += 1
 
-        # Determine the winner or return None (TBD)
         if sets_team1 == 2:
             return self.team1
         elif sets_team2 == 2:
@@ -81,7 +77,15 @@ class Match(models.Model):
             return None
 
     def save(self, *args, **kwargs):
-        self.winner = self.get_winner()
+        is_update = self.pk is not None
+        new_winner = self.get_winner()
+
+        if self.winner != new_winner:
+            self.winner = new_winner
+
+        if is_update:
+            self.updated_at = now()  # update only if it's not a new object
+
         super().save(*args, **kwargs)
         update_points_table(self.group)
 
@@ -116,7 +120,6 @@ class Match(models.Model):
     def __str__(self):
         return f"{self.team1.name} vs {self.team2.name} (Group {self.group.name})"
 
-
 class SetScore(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='set_scores')
     set_number = models.IntegerField()  # 1, 2, or 3
@@ -125,7 +128,6 @@ class SetScore(models.Model):
 
     def __str__(self):
         return f"Set {self.set_number}: {self.match}"
-
 
 class PointsTable(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)

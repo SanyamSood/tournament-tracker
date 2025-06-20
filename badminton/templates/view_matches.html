@@ -98,9 +98,9 @@
                             </td>
                             <td>
                                 {{ match.local_time|time:"H:i" }}
-                                {% if user.is_authenticated and match.was_updated %}
+                                {% if user.is_authenticated and match.updated_at %}
                                     <br>
-                                    <small class="text-info">(Updated {{ match.local_updated_time|time:"H:i" }})</small>
+                                    <small class="text-info">(Updated: {{ match.updated_at|time:"H:i" }})</small>
                                 {% endif %}
                             </td>
                             {% if perms.badminton.change_match %}
