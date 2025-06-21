@@ -60,13 +60,19 @@
         {% endif %}
     </div>
 
-    <!-- Points Table Header & Search -->
+    <!-- Search Bar -->
     <div class="d-flex justify-content-between align-items-center mb-3 mt-5 flex-wrap">
         <h4 class="text-white mb-2"><i class="bi bi-table me-2"></i>Points Table</h4>
         <input type="text" id="teamSearch" class="form-control w-auto" placeholder="Search team..." oninput="filterGroups()">
     </div>
 
-    <!-- Groups and Tables -->
+    <!-- Global View Toggle Button for Mobile -->
+    <div class="d-md-none text-end mb-3">
+        <button class="btn btn-outline-light btn-sm" onclick="toggleAllMobileViews(this)">
+            <i id="toggleArrow" class="bi bi-chevron-down me-1"></i><span id="mobileToggleText">View More</span>
+        </button>
+    </div>
+
     {% for group in groups %}
         <div class="glass-card mb-4 p-3 rounded-4 shadow-sm group-block" data-group="{{ group.group }}">
             <!-- Group Header -->
@@ -78,9 +84,10 @@
                 </h5>
             </div>
 
-            <!-- Group Table -->
             <div id="group-{{ group.group }}" class="group-table">
-                <div class="table-responsive">
+
+                <!-- DESKTOP TABLE VIEW -->
+                <div class="table-responsive d-none d-md-block mb-4">
                     <table class="table table-dark table-hover table-bordered text-center align-middle mb-0">
                         <thead class="table-light text-dark">
                             <tr>
@@ -88,14 +95,12 @@
                                 <th>Played</th>
                                 <th>Won</th>
                                 <th>Lost</th>
-                                {% if user.is_authenticated %}
-                                    <th>Sets Won</th>
-                                    <th>Sets Lost</th>
-                                    <th>Set Diff</th>
-                                    <th>Points Scored</th>
-                                    <th>Points Conceded</th>
-                                    <th>Point Diff</th>
-                                {% endif %}
+                                <th>Sets Won</th>
+                                <th>Sets Lost</th>
+                                <th>Set Diff</th>
+                                <th>Points Scored</th>
+                                <th>Points Conceded</th>
+                                <th>Point Diff</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,18 +110,16 @@
                                     <td>{{ team.played }}</td>
                                     <td>{{ team.won }}</td>
                                     <td>{{ team.lost }}</td>
-                                    {% if user.is_authenticated %}
-                                        <td>{{ team.sets_won }}</td>
-                                        <td>{{ team.sets_lost }}</td>
-                                        <td>{{ team.set_diff }}</td>
-                                        <td>{{ team.points_scored }}</td>
-                                        <td>{{ team.points_conceded }}</td>
-                                        <td>{{ team.point_diff }}</td>
-                                    {% endif %}
+                                    <td>{{ team.sets_won }}</td>
+                                    <td>{{ team.sets_lost }}</td>
+                                    <td>{{ team.set_diff }}</td>
+                                    <td>{{ team.points_scored }}</td>
+                                    <td>{{ team.points_conceded }}</td>
+                                    <td>{{ team.point_diff }}</td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="{% if user.is_authenticated %}10{% else %}4{% endif %}" class="text-muted">
+                                    <td colspan="10" class="text-muted">
                                         <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
                                     </td>
                                 </tr>
@@ -124,6 +127,68 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- MOBILE VIEWS -->
+                <div class="d-md-none">
+                    <!-- COMPACT TABLE VIEW -->
+                    <div class="mobile-compact">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover table-bordered text-center align-middle mb-0">
+                                <thead class="table-light text-dark">
+                                    <tr>
+                                        <th>Team</th>
+                                        <th>Played</th>
+                                        <th>Won</th>
+                                        <th>Lost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for team in group.table %}
+                                        <tr>
+                                            <td class="team-name">{{ team.name }}</td>
+                                            <td>{{ team.played }}</td>
+                                            <td>{{ team.won }}</td>
+                                            <td>{{ team.lost }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-muted">
+                                                <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- DETAILED CARD VIEW -->
+                    <div class="mobile-detailed d-none">
+                        {% for team in group.table %}
+                            <div class="bg-dark text-white rounded-4 p-3 mb-4 shadow-sm border border-light-subtle">
+                                <h6 class="fw-bold fs-6 mb-3">
+                                    <i class="bi bi-person-fill me-1"></i>{{ team.name }}
+                                </h6>
+                                <div class="row row-cols-2 g-2 small">
+                                    <div class="col"><strong>Played:</strong> {{ team.played }}</div>
+                                    <div class="col"><strong>Won:</strong> {{ team.won }}</div>
+                                    <div class="col"><strong>Lost:</strong> {{ team.lost }}</div>
+                                    <div class="col"><strong>Sets Won:</strong> {{ team.sets_won }}</div>
+                                    <div class="col"><strong>Sets Lost:</strong> {{ team.sets_lost }}</div>
+                                    <div class="col"><strong>Set Diff:</strong> {{ team.set_diff }}</div>
+                                    <div class="col"><strong>Scored:</strong> {{ team.points_scored }}</div>
+                                    <div class="col"><strong>Conceded:</strong> {{ team.points_conceded }}</div>
+                                    <div class="col"><strong>Point Diff:</strong> {{ team.point_diff }}</div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="text-muted">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i>No data yet.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
             </div>
         </div>
     {% endfor %}
@@ -155,6 +220,28 @@ function filterGroups() {
         });
         block.style.display = found ? 'block' : 'none';
     });
+}
+
+function toggleAllMobileViews(button) {
+    const compactViews = document.querySelectorAll('.mobile-compact');
+    const detailedViews = document.querySelectorAll('.mobile-detailed');
+    const textSpan = document.getElementById('mobileToggleText');
+    const icon = document.getElementById('toggleArrow');
+    const allCompactHidden = [...compactViews].every(view => view.classList.contains('d-none'));
+
+    if (allCompactHidden) {
+        compactViews.forEach(el => el.classList.remove('d-none'));
+        detailedViews.forEach(el => el.classList.add('d-none'));
+        textSpan.textContent = 'View More';
+        icon.classList.remove('bi-chevron-up');
+        icon.classList.add('bi-chevron-down');
+    } else {
+        compactViews.forEach(el => el.classList.add('d-none'));
+        detailedViews.forEach(el => el.classList.remove('d-none'));
+        textSpan.textContent = 'View Less';
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-chevron-up');
+    }
 }
 </script>
 {% endblock %}
