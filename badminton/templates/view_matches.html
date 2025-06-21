@@ -35,7 +35,7 @@
         {% endif %}
     </div>
 
-    <!-- Matches Header & Search -->
+    <!-- Search & Toggle -->
     <div class="d-flex justify-content-between align-items-center mb-3 mt-5 flex-wrap">
         <h4 class="text-white mb-2">
             <i class="bi bi-list-ol me-2"></i> Matches
@@ -43,10 +43,17 @@
         <input type="text" id="matchSearch" class="form-control w-auto" placeholder="Search team..." oninput="filterMatches()">
     </div>
 
-    <!-- Matches Table -->
-    <div class="glass-card p-4 rounded-4 shadow-sm text-white mb-5">
+    <!-- Mobile Toggle Button -->
+    <div class="d-md-none text-end mb-3">
+        <button class="btn btn-outline-light btn-sm" onclick="toggleMobileView(this)">
+            <i id="toggleIcon" class="bi bi-arrows-fullscreen me-1"></i><span id="toggleText">View More</span>
+        </button>
+    </div>
+
+    <!-- DESKTOP Table -->
+    <div class="glass-card p-4 rounded-4 shadow-sm text-white mb-5 d-none d-md-block">
         <div class="table-responsive table-responsive-no-scrollbar">
-            <table class="table table-dark table-bordered table-hover align-middle text-center mb-0 table-fixed" id="matchesTable" style="table-layout: fixed; width: 100%;">
+            <table class="table table-dark table-bordered table-hover align-middle text-center mb-0 table-fixed" style="table-layout: fixed; width: 100%;">
                 <thead class="table-light text-dark">
                     <tr>
                         <th style="width: 4%;">#</th>
@@ -69,44 +76,19 @@
                     {% for match in matches %}
                         <tr class="match-row">
                             <td>{{ forloop.counter }}</td>
-                            <td class="group-cell">
-                                <div class="truncate" style="max-width: 100%; width: 100%;">{{ match.group.name }}</div>
-                            </td>
-                            <td class="team-cell text-start">
-                                <div class="truncate" style="max-width: 100%; width: 100%;">{{ match.team1.name }}</div>
-                            </td>
-                            <td class="team-cell text-start">
-                                <div class="truncate" style="max-width: 100%; width: 100%;">{{ match.team2.name }}</div>
-                            </td>
+                            <td><div class="truncate">{{ match.group.name }}</div></td>
+                            <td class="text-start"><div class="truncate">{{ match.team1.name }}</div></td>
+                            <td class="text-start"><div class="truncate">{{ match.team2.name }}</div></td>
                             <td>{{ match.court_number }}</td>
                             <td>{{ match.set1_team1 }} - {{ match.set1_team2 }}</td>
-                            <td>
-                                {% if match.set2_team1 is not None and match.set2_team2 is not None %}
-                                    {{ match.set2_team1 }} - {{ match.set2_team2 }}
-                                {% else %}
-                                    <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if match.set3_team1 is not None and match.set3_team2 is not None %}
-                                    {{ match.set3_team1 }} - {{ match.set3_team2 }}
-                                {% else %}
-                                    <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
+                            <td>{% if match.set2_team1 %}{{ match.set2_team1 }} - {{ match.set2_team2 }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                            <td>{% if match.set3_team1 %}{{ match.set3_team1 }} - {{ match.set3_team2 }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
                             <td>{{ match.match_score }}</td>
-                            <td>
-                                {% if match.winner %}
-                                    <div class="truncate fw-bold text-success" style="max-width: 100%; width: 100%;">{{ match.winner.name }}</div>
-                                {% else %}
-                                    <span class="text-warning">TBD</span>
-                                {% endif %}
-                            </td>
+                            <td>{% if match.winner %}<div class="truncate text-success fw-bold">{{ match.winner.name }}</div>{% else %}<span class="text-warning">TBD</span>{% endif %}</td>
                             <td>
                                 {{ match.local_time|time:"H:i" }}
                                 {% if user.is_authenticated and match.updated_at %}
-                                    <br>
-                                    <small class="text-info">(Updated: {{ match.updated_at|time:"H:i" }})</small>
+                                    <br><small class="text-info">(Updated: {{ match.updated_at|time:"H:i" }})</small>
                                 {% endif %}
                             </td>
                             {% if perms.badminton.change_match %}
@@ -119,7 +101,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="{% if perms.badminton.change_match %}12{% else %}11{% endif %}" class="text-center text-white">
+                            <td colspan="12" class="text-center text-white">
                                 <i class="bi bi-info-circle me-1"></i> No matches recorded yet.
                             </td>
                         </tr>
@@ -128,21 +110,125 @@
             </table>
         </div>
     </div>
+
+   <!-- MOBILE VIEW -->
+<div class="d-md-none">
+    <!-- Compact Table -->
+    <div class="mobile-compact">
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered text-center align-middle mb-0 table-fixed">
+                <thead class="table-light text-dark">
+                    <tr>
+                        <th style="width: 34%;">Team 1</th>
+                        <th style="width: 34%;">Team 2</th>
+                        <th style="width: 16%;">Score</th>
+                        <th style="width: 16%;">Winner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for match in matches %}
+                        <tr class="match-row">
+                            <td><div class="truncate">{{ match.team1.name }}</div></td>
+                            <td><div class="truncate">{{ match.team2.name }}</div></td>
+                            <td>{{ match.match_score }}</td>
+                            <td>
+                                {% if match.winner %}
+                                    <div class="truncate text-success fw-bold">{{ match.winner.name }}</div>
+                                {% else %}
+                                    <span class="text-warning">TBD</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-white">
+                                <i class="bi bi-info-circle me-1"></i> No matches recorded yet.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Detailed Card View -->
+<div class="mobile-detailed d-none">
+    {% for match in matches %}
+        <div class="bg-dark text-white rounded-4 p-3 mb-4 shadow-sm border border-light-subtle">
+            <!-- Match Title with Truncated Team Names -->
+           <h6 class="fw-bold fs-6 mb-2 d-flex flex-wrap align-items-baseline gap-1">
+    Match {{ forloop.counter }}:
+    <span class="d-inline-block text-truncate" style="max-width: 7em;" title="{{ match.team1.name }}">{{ match.team1.name }}</span>
+    vs
+    <span class="d-inline-block text-truncate" style="max-width: 7em;" title="{{ match.team2.name }}">{{ match.team2.name }}</span>
+</h6>
+
+
+            <p class="small mb-2 text-info">Group: {{ match.group.name }}</p>
+            <div class="small mb-1"><strong>Court:</strong> {{ match.court_number }}</div>
+
+            <!-- Condensed Set Scores -->
+            <div class="small mb-1"><strong>Set Scores:</strong>
+                {% if match.set1_team1 is not None and match.set1_team2 is not None %}
+                    {{ match.set1_team1 }}-{{ match.set1_team2 }}
+                {% endif %}
+                {% if match.set2_team1 is not None and match.set2_team2 is not None %}
+                    , {{ match.set2_team1 }}-{{ match.set2_team2 }}
+                {% endif %}
+                {% if match.set3_team1 is not None and match.set3_team2 is not None %}
+                    , {{ match.set3_team1 }}-{{ match.set3_team2 }}
+                {% endif %}
+            </div>
+
+            <div class="small mb-1"><strong>Score:</strong> {{ match.match_score }}</div>
+            <div class="small mb-1"><strong>Winner:</strong> 
+                {% if match.winner %}
+                    <span class="text-success fw-semibold d-inline-block text-truncate" style="max-width: 12em;">{{ match.winner.name }}</span>
+                {% else %}
+                    <span class="text-warning">TBD</span>
+                {% endif %}
+            </div>
+            <div class="small mb-0"><strong>Time:</strong> {{ match.local_time|time:"H:i" }}</div>
+        </div>
+    {% endfor %}
 </div>
 
-<!-- Script -->
+</div>
+
+</div>
+
+<!-- Scripts -->
 <script>
 function filterMatches() {
     const query = document.getElementById('matchSearch').value.toLowerCase();
     const rows = document.querySelectorAll('.match-row');
-
     rows.forEach(row => {
-        const teamCells = row.querySelectorAll('.team-cell, .group-cell');
-        const matchFound = Array.from(teamCells).some(cell =>
-            cell.textContent.toLowerCase().includes(query)
-        );
-        row.style.display = matchFound ? '' : 'none';
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
     });
+}
+
+function toggleMobileView(button) {
+    const compact = document.querySelector('.mobile-compact');
+    const detailed = document.querySelector('.mobile-detailed');
+    const icon = document.getElementById('toggleIcon');
+    const text = document.getElementById('toggleText');
+
+    const isDetailed = !detailed.classList.contains('d-none');
+
+    if (isDetailed) {
+        detailed.classList.add('d-none');
+        compact.classList.remove('d-none');
+        icon.classList.remove('bi-arrows-collapse');
+        icon.classList.add('bi-arrows-fullscreen');
+        text.textContent = 'View More';
+    } else {
+        compact.classList.add('d-none');
+        detailed.classList.remove('d-none');
+        icon.classList.remove('bi-arrows-fullscreen');
+        icon.classList.add('bi-arrows-collapse');
+        text.textContent = 'View Less';
+    }
 }
 </script>
 {% endblock %}
