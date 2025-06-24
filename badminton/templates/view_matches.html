@@ -119,10 +119,10 @@
             <table class="table table-dark table-bordered text-center align-middle mb-0 table-fixed">
                 <thead class="table-light text-dark">
                     <tr>
-                        <th style="width: 34%;">Team 1</th>
-                        <th style="width: 34%;">Team 2</th>
-                        <th style="width: 16%;">Score</th>
-                        <th style="width: 16%;">Winner</th>
+                        <th style="width: 28%;">Team 1</th>
+                        <th style="width: 28%;">Team 2</th>
+                        <th style="width: 14%;">Score</th>
+                        <th style="width: 29%;">Winner</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -156,12 +156,17 @@
     {% for match in matches %}
         <div class="bg-dark text-white rounded-4 p-3 mb-4 shadow-sm border border-light-subtle">
             <!-- Match Title with Truncated Team Names -->
-           <h6 class="fw-bold fs-6 mb-2 d-flex flex-wrap align-items-baseline gap-1">
-    Match {{ forloop.counter }}:
-    <span class="d-inline-block text-truncate" style="max-width: 7em;" title="{{ match.team1.name }}">{{ match.team1.name }}</span>
-    vs
-    <span class="d-inline-block text-truncate" style="max-width: 7em;" title="{{ match.team2.name }}">{{ match.team2.name }}</span>
+          <h6 class="fw-bold fs-6 mb-2 d-flex flex-wrap align-items-baseline gap-1">
+  Match {{ forloop.counter }}:
+  <span class="d-inline-block text-truncate" style="max-width: 7em;" title="{{ match.team1.name }}">
+    {{ match.team1.name }}
+  </span>
+  vs
+  <span class="d-inline-block text-truncate" style="max-width: 7em;" title="{{ match.team2.name }}">
+    {{ match.team2.name }}
+  </span>
 </h6>
+
 
 
             <p class="small mb-2 text-info">Group: {{ match.group.name }}</p>
@@ -181,13 +186,15 @@
             </div>
 
             <div class="small mb-1"><strong>Score:</strong> {{ match.match_score }}</div>
-            <div class="small mb-1"><strong>Winner:</strong> 
-                {% if match.winner %}
-                    <span class="text-success fw-semibold d-inline-block text-truncate" style="max-width: 12em;">{{ match.winner.name }}</span>
-                {% else %}
-                    <span class="text-warning">TBD</span>
-                {% endif %}
-            </div>
+           <div class="small mb-1 d-flex align-items-center">
+  <strong class="me-1">Winner:</strong>
+  {% if match.winner %}
+    <span class="text-success fw-semibold text-truncate" style="max-width: 12em;">{{ match.winner.name }}</span>
+  {% else %}
+    <span class="text-warning">TBD</span>
+  {% endif %}
+</div>
+
             <div class="small mb-0"><strong>Time:</strong> {{ match.local_time|time:"H:i" }}</div>
         </div>
     {% endfor %}
