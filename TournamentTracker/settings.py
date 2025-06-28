@@ -8,17 +8,23 @@ import os
 from decouple import config
 import dj_database_url
 
-# ✅ Timezone
-TIME_ZONE = 'Asia/Kolkata'
-USE_TZ = True
-
 # ✅ Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ✅ SECURITY
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = ['tournament-tracker-dgus.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    'tournament-tracker-dgus.onrender.com',
+    '127.0.0.1',
+    'localhost',
+]
+
+# ✅ Timezone & internationalization
+TIME_ZONE = 'Asia/Kolkata'
+USE_TZ = True
+LANGUAGE_CODE = 'en-us'
+USE_I18N = True
 
 # ✅ Auth redirects
 LOGIN_URL = '/login/'
@@ -37,10 +43,10 @@ INSTALLED_APPS = [
     'badminton',
 ]
 
-# ✅ Middleware (include WhiteNoise)
+# ✅ Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static file serving
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -49,8 +55,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ✅ URL config
+# ✅ URL & WSGI
 ROOT_URLCONF = 'TournamentTracker.urls'
+WSGI_APPLICATION = 'TournamentTracker.wsgi.application'
 
 # ✅ Templates
 TEMPLATES = [
@@ -71,18 +78,15 @@ TEMPLATES = [
     },
 ]
 
-# ✅ WSGI application
-WSGI_APPLICATION = 'TournamentTracker.wsgi.application'
-
-# ✅ Database configuration
+# ✅ Database
 DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
     DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
+        'default': dj_database_url.parse(
+            DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True
+            ssl_require=False  # Set to True if using PostgreSQL with SSL
         )
     }
 else:
@@ -101,15 +105,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ✅ Language and internationalization
-LANGUAGE_CODE = 'en-us'
-USE_I18N = True
-
-# ✅ Static files settings
+# ✅ Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ✅ Default auto primary key
+# ✅ Default auto field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
