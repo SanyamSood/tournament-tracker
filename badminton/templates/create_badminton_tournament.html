@@ -42,8 +42,8 @@
             {{ form.num_groups|add_class:"form-select bg-dark text-white border-secondary" }}
           </div>
 
-          <!-- Dynamic Group Inputs -->
-          {% for letter in "ABCDEFGHIJ" %}
+          <!-- Dynamic Group Inputs for A–T (20 groups) -->
+          {% for letter in "ABCDEFGHIJKLMNOPQRST" %}
             {% with "group_"|add:letter|lower|add:"_teams" as field_name %}
               {% with form|get_item:field_name as field %}
                 <div class="mb-3 group-box" id="group{{ letter }}Box" style="display: none;">
@@ -77,11 +77,11 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const select = document.querySelector('select[name="num_groups"]');
-    const maxGroups = 10;
+    const maxGroups = 20;
 
     function toggleGroupInputs(num) {
       for (let i = 0; i < maxGroups; i++) {
-        const letter = String.fromCharCode(65 + i); // A-J
+        const letter = String.fromCharCode(65 + i); // A-T
         const box = document.getElementById(`group${letter}Box`);
         if (box) {
           box.style.display = (i < num) ? 'block' : 'none';

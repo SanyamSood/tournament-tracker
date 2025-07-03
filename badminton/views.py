@@ -99,23 +99,18 @@ def tournament_detail(request, tournament_id):
 def view_matches(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
 
-    # Get the search query from GET parameters
     search_query = request.GET.get('search', '').strip()
 
-    # Base queryset: matches for the tournament
     matches = Match.objects.filter(group__tournament=tournament)
 
-    # If search query is provided, filter by team1 or team2 name
     if search_query:
         matches = matches.filter(
             Q(team1__name__icontains=search_query) |
             Q(team2__name__icontains=search_query)
         )
 
-    # Order matches by creation time
     matches = matches.order_by('created_at')
 
-    # Add local time attributes to each match
     for match in matches:
         match.local_time = match.created_at
         match.local_updated_time = match.updated_at if match.was_updated else None
@@ -142,11 +137,14 @@ def test_permission_view(request):
 @user_passes_test(is_organiser)
 def create_badminton_tournament(request):
     print("Inside create_badminton_tournament view")
-    GROUP_CHOICES = [(i, f"{i} Group{'s' if i > 1 else ''}") for i in range(1, 11)]
+
+    # ✅ Updated to support 20 groups
+    GROUP_CHOICES = [(i, f"{i} Group{'s' if i > 1 else ''}") for i in range(1, 21)]
+
     if request.method == 'POST':
         form = TournamentForm(request.POST)
         num_groups = int(request.POST.get('num_groups', 1))
-        group_letters = list(string.ascii_uppercase[:num_groups])
+        group_letters = list(string.ascii_uppercase[:num_groups])  # Supports A–T
 
         if form.is_valid():
             tournament = Tournament.objects.create(
@@ -166,7 +164,7 @@ def create_badminton_tournament(request):
     else:
         form = TournamentForm()
         num_groups = int(request.GET.get('num_groups', 1))
-        group_letters = list(string.ascii_uppercase[:10])
+        group_letters = list(string.ascii_uppercase[:20])  # A to T for display
 
     return render(request, 'create_badminton_tournament.html', {
         'form': form,
@@ -192,9 +190,7 @@ def add_match(request, tournament_id):
 @login_required
 @user_passes_test(is_organiser_or_manager)
 def edit_match(request, tournament_id, match_id):
-    match = get_object_or_404(
-        Match, id=match_id, group__tournament__id=tournament_id
-    )
+    match = get_object_or_404(Match, id=match_id, group__tournament__id=tournament_id)
     tournament = get_object_or_404(Tournament, id=tournament_id)
 
     if request.method == 'POST':
@@ -206,15 +202,11 @@ def edit_match(request, tournament_id, match_id):
     else:
         form = MatchForm(instance=match, tournament=tournament)
 
-    return render(
-        request,
-        'edit_match.html',
-        {
-            'form': form,
-            'match': match,
-            'tournament': tournament,
-        }
-    )
+    return render(request, 'edit_match.html', {
+        'form': form,
+        'match': match,
+        'tournament': tournament,
+    })
 
 @login_required
 @user_passes_test(is_organiser_or_manager)
