@@ -1,5 +1,11 @@
 # badminton/utils.py
 
+def initialize_points_table(group):
+    from .models import PointsTable
+
+    teams = group.teams.all()
+    for team in teams:
+        PointsTable.objects.get_or_create(group=group, team=team)
 def update_points_table(group):
     from .models import PointsTable, Match  # ✅ delayed import to avoid circular imports
 

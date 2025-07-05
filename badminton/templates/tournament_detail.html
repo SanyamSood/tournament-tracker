@@ -45,6 +45,11 @@
                 <i class="bi bi-plus-circle-fill me-1"></i>Add Match
             </a>
         {% endif %}
+        <a href="{% url 'download_points_table_csv' tournament.id %}" class="btn btn-success btn-glow rounded-pill px-4">
+    <i class="bi bi-download me-1"></i>Download Points Table CSV
+</a>
+
+
         {% if perms.badminton.add_team %}
             <a href="{% url 'add_team' tournament.id %}" class="btn btn-info btn-glow rounded-pill px-4">
                 <i class="bi bi-person-plus-fill me-1"></i>Add Team

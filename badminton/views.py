@@ -5,10 +5,54 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.forms import modelformset_factory
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .utils import update_points_table
+from .utils import update_points_table, initialize_points_table  # already importing utils
 from datetime import timedelta
 import string
 from django.db.models import Q
+
+import csv
+from django.http import HttpResponse
+from .models import PointsTable, Tournament
+import csv
+from django.http import HttpResponse
+from .models import Tournament, Group, Team
+
+from django.http import HttpResponse
+import csv
+
+def download_points_table_csv(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id=tournament_id)
+
+    # Query all PointsTable rows for teams in groups of this tournament
+    points_rows = PointsTable.objects.filter(group__tournament=tournament).select_related('group', 'team').order_by('group__name', '-points')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="points_table_{tournament.name}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        'Group', 'Team', 'Played', 'Won', 'Lost',
+        'Sets Won', 'Sets Lost', 'Set Diff',
+        'Points Scored', 'Points Conceded', 'Point Diff', 'Points'
+    ])
+
+    for row in points_rows:
+        writer.writerow([
+            row.group.name,
+            row.team.name,
+            row.matches_played,
+            row.matches_won,
+            row.matches_lost,
+            row.sets_won,
+            row.sets_lost,
+            row.sets_won - row.sets_lost,
+            row.points_scored,
+            row.points_conceded,
+            row.points_scored - row.points_conceded,
+            row.points,
+        ])
+
+    return response
 
 # ==== GROUP CHECKERS ====
 def is_organiser(user):
@@ -159,6 +203,7 @@ def create_badminton_tournament(request):
                 for team_name in team_names:
                     if team_name.strip():
                         Team.objects.create(name=team_name.strip(), group=group)
+                initialize_points_table(group)
 
             return redirect('tournament_detail', tournament.id)
     else:

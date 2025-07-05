@@ -26,4 +26,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     #path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
+    path('tournament/<int:tournament_id>/download-points/', views.download_points_table_csv, name='download_points_table_csv'),
 ]
