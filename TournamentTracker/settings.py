@@ -8,30 +8,40 @@ import os
 from decouple import config
 import dj_database_url
 
-# ✅ Base directory
+# ------------------------
+# BASE DIRECTORY
+# ------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ SECURITY
+# ------------------------
+# SECURITY
+# ------------------------
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
-    'tournament-tracker-dgus.onrender.com',
+    'tournament-tracker-dgus.onrender.com',  # Render deployment
     '127.0.0.1',
     'localhost',
 ]
 
-# ✅ Timezone & internationalization
+# ------------------------
+# TIMEZONE & INTERNATIONALIZATION
+# ------------------------
 TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
 LANGUAGE_CODE = 'en-us'
 USE_I18N = True
 
-# ✅ Auth redirects
+# ------------------------
+# AUTH REDIRECTS
+# ------------------------
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/badminton/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-# ✅ Installed apps
+# ------------------------
+# INSTALLED APPS
+# ------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,10 +53,12 @@ INSTALLED_APPS = [
     'badminton',
 ]
 
-# ✅ Middleware
+# ------------------------
+# MIDDLEWARE
+# ------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static file serving
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,11 +67,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ✅ URL & WSGI
+# ------------------------
+# URL & WSGI
+# ------------------------
 ROOT_URLCONF = 'TournamentTracker.urls'
 WSGI_APPLICATION = 'TournamentTracker.wsgi.application'
 
-# ✅ Templates
+# ------------------------
+# TEMPLATES
+# ------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -78,18 +94,22 @@ TEMPLATES = [
     },
 ]
 
-# ✅ Database
+# ------------------------
+# DATABASE
+# ------------------------
 DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
+    # PostgreSQL (Render or local) from DATABASE_URL
     DATABASES = {
         'default': dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=False  # Set to True if using PostgreSQL with SSL
+            ssl_require=False  # Change to True if Render enforces SSL
         )
     }
 else:
+    # Default fallback: SQLite (local dev if DATABASE_URL not set)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -97,7 +117,9 @@ else:
         }
     }
 
-# ✅ Password validation
+# ------------------------
+# PASSWORD VALIDATION
+# ------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -105,10 +127,22 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ✅ Static files (CSS, JavaScript, Images)
+# ------------------------
+# STATIC FILES
+# ------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ✅ Default auto field
+# ------------------------
+# DEFAULT AUTO FIELD
+# ------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ------------------------
+# OPTIONAL: Local Development ENV VARS (if using .env)
+# ------------------------
+# Example .env for local development:
+# DATABASE_URL=postgres://myuser:mypassword@localhost:5432/mydatabase
+# SECRET_KEY=unsafe-secret-key
+# DEBUG=True
